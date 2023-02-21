@@ -10,6 +10,10 @@ import org.springframework.stereotype.Component
 @Aspect
 @Component
 class LogAspect {
+    @Pointcut("execution(* io.mcm.kotlinaspireassignment.controller.*.*(..))")
+    fun aroundController() {
+    }
+
     @Around("aroundController()")
     fun logAroundController(proceedPoint: ProceedingJoinPoint) {
         val controllerClass = proceedPoint.signature.declaringType
@@ -20,9 +24,5 @@ class LogAspect {
         controllerLogger.debug("$controllerName.$methodName invoked with arguments: \n${methodArgs.contentToString()}")
         val result = proceedPoint.proceed()
         controllerLogger.debug("$controllerName.$methodName returned with result: $result")
-    }
-
-    @Pointcut("execution(* io.mcm.kotlinaspireassignment.controller.*.*(..)")
-    fun aroundController() {
     }
 }

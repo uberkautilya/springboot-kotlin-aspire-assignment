@@ -1,1 +1,21 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+  datasource:
+    url: jdbc:mysql://localhost:3306/assignment101
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: 'create-drop'
+    database-platform: org.hibernate.dialect.MySQL8Dialect
 
+default:
+  pageSize:
+    courses: 5
+    departments: 5
+    students: 5
+    teachers: 5

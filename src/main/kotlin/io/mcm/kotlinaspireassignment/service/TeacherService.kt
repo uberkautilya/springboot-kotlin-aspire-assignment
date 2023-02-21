@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class TeacherService(val teacherRepository: TeacherRepository, val teacherSpecification: TeacherSpecification) {
+class TeacherService(val teacherRepository: TeacherRepository) {
     private val teacherServiceLogger = LoggerFactory.getLogger(TeacherService::class.java)
 
-    @Value("\${teachers.default.pageSize}")
+    @Value("\${default.pageSize.teachers:3}")
     private var defaultPageSize: Int = 0
 
     fun findAll() {
@@ -43,14 +43,14 @@ class TeacherService(val teacherRepository: TeacherRepository, val teacherSpecif
     fun filter(request: TeacherRequest): TeacherResponse {
         var page: Page<Teacher>
         if (Objects.isNull(request.pageNo)) {
-            page = PageImpl(teacherRepository.findAll(teacherSpecification.build(request)))
+            page = PageImpl(teacherRepository.findAll(TeacherSpecification.build(request)))
         } else {
             if (Objects.isNull(request.pageSize)) {
                 request.pageSize = defaultPageSize
             }
             teacherServiceLogger.debug("TeacherService.filter: pageNumber: ${request.pageNo}, pageSize: ${request.pageSize}")
             val pageable = PageRequest.of(request.pageNo - 1, request.pageSize)
-            page = teacherRepository.findAll(teacherSpecification.build(request), pageable)
+            page = teacherRepository.findAll(TeacherSpecification.build(request), pageable)
         }
         val list: List<Teacher> = page.content
         val teacherResponse = TeacherResponse(mutableListOf<Teacher>())

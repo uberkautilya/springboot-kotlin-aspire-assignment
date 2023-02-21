@@ -1,19 +1,36 @@
 package io.mcm.kotlinaspireassignment.model.entity
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import io.mcm.kotlinaspireassignment.model.dto.CourseDto
-import io.mcm.kotlinaspireassignment.model.dto.DepartmentDto
-import javax.persistence.Entity
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
 @Table(name = "teachers")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 open class Teacher {
-    var id: Int = 0
-    var name: String =""
-    var courseList = mutableListOf<CourseDto>()
-    var dept = Department()
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    open var id: Int = 0
+    open var name: String = ""
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "teacher", cascade = [CascadeType.PERSIST])
+    open var courseList: MutableList<Course> = mutableListOf()
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST])
+    open var dept = Department()
+
+    constructor()
+    constructor(
+        id: Int = 0,
+        name: String = "",
+        courseList: MutableList<Course> = mutableListOf(),
+        dept: Department = Department()
+    ) {
+        this.id = id
+        this.name = name
+        this.courseList = courseList
+        this.dept = dept
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

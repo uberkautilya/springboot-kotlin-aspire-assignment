@@ -14,11 +14,11 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class CourseService(val courseRepository: CourseRepository, val courseSpecification: CourseSpecification) {
+class CourseService(val courseRepository: CourseRepository) {
 
     private val courseServiceLogger = LoggerFactory.getLogger(CourseService::class.java)
 
-    @Value("\${courses.default.pageSize}")
+    @Value("\${default.pageSize.courses:3}")
     private var defaultPageSize: Int = 0
 
     fun findAll() {
@@ -44,14 +44,14 @@ class CourseService(val courseRepository: CourseRepository, val courseSpecificat
     fun filter(request: CourseRequest): CourseResponse {
         var page: Page<Course>
         if (Objects.isNull(request.pageNo)) {
-            page = PageImpl(courseRepository.findAll(courseSpecification.build(request)))
+            page = PageImpl(courseRepository.findAll(CourseSpecification.build(request)))
         } else {
             if (Objects.isNull(request.pageSize)) {
                 request.pageSize = defaultPageSize
             }
             courseServiceLogger.debug("CourseService.filter: pageNumber: ${request.pageNo}, pageSize: ${request.pageSize}")
             val pageable = PageRequest.of(request.pageNo - 1, request.pageSize)
-            page = courseRepository.findAll(courseSpecification.build(request), pageable)
+            page = courseRepository.findAll(CourseSpecification.build(request), pageable)
         }
         val list: List<Course> = page.content
         val courseResponse = CourseResponse(mutableListOf())
