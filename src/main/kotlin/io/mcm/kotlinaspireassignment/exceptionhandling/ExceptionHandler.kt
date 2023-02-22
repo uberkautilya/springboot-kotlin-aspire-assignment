@@ -17,40 +17,68 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(CourseException::class)
     fun handleCourseException(exception: CourseException, request: WebRequest): ResponseEntity<Any> {
         val mutableMap: MutableMap<String, Any> = HashMap()
+        var status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR
         mutableMap["Error"] = when (exception) {
-            is CourseException.CourseNotFoundException -> "Course not found: ${exception.message}: ${request.parameterMap.entries}"
-            is CourseException.CourseNotPersistedException -> "Course not persisted: ${exception.message}: ${request.parameterMap.entries}"
+            is CourseException.CourseNotFoundException -> {
+                status = HttpStatus.NOT_FOUND
+                "Course not found: ${exception.message}: ${request.parameterMap.entries}"
+            }
+            is CourseException.CourseNotPersistedException -> {
+                status = HttpStatus.BAD_REQUEST
+                "Course not persisted: ${exception.message}: ${request.parameterMap.entries}"
+            }
         }
-        return ResponseEntity(mutableMap, HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity(mutableMap, status)
     }
 
     @ExceptionHandler(StudentException::class)
     fun handleStudentException(exception: StudentException, request: WebRequest): ResponseEntity<Any> {
         val mutableMap: MutableMap<String, Any> = HashMap()
+        var status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR
         mutableMap["Error"] = when (exception) {
-            is StudentException.StudentNotFoundException -> "Student not found: ${exception.message}: ${request.parameterMap.entries}"
-            is StudentException.StudentNotPersistedException -> "Student not persisted: ${exception.message}: ${request.parameterMap.entries}"
+            is StudentException.StudentNotFoundException -> {
+                status = HttpStatus.NOT_FOUND
+                "Student not found: ${exception.message}: ${request.parameterMap.entries}"
+            }
+            is StudentException.StudentNotPersistedException -> {
+                status = HttpStatus.BAD_REQUEST
+                "Student not persisted: ${exception.message}: ${request.parameterMap.entries}"
+            }
         }
-        return ResponseEntity(mutableMap, HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity(mutableMap, status)
     }
 
     @ExceptionHandler(TeacherException::class)
     fun handleTeacherException(exception: TeacherException, request: WebRequest): ResponseEntity<Any> {
         val mutableMap: MutableMap<String, Any> = HashMap()
+        var status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR
         mutableMap["Error"] = when (exception) {
-            is TeacherException.TeacherNotFoundException -> "Teacher not found: ${exception.message}: ${request.parameterMap.entries}"
-            is TeacherException.TeacherNotPersistedException -> "Teacher not persisted: ${exception.message}: ${request.parameterMap.entries}"
+            is TeacherException.TeacherNotFoundException -> {
+                status = HttpStatus.NOT_FOUND
+                "Teacher not found: ${exception.message}: ${request.parameterMap.entries}"
+            }
+            is TeacherException.TeacherNotPersistedException -> {
+                status = HttpStatus.BAD_REQUEST
+                "Teacher not persisted: ${exception.message}: ${request.parameterMap.entries}"
+            }
         }
-        return ResponseEntity(mutableMap, HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity(mutableMap, status)
     }
 
     @ExceptionHandler(DepartmentException::class)
     fun handleDepartmentException(exception: DepartmentException, request: WebRequest): ResponseEntity<Any> {
         val mutableMap: MutableMap<String, Any> = HashMap()
+        var status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR
         mutableMap["Error"] = when (exception) {
-            is DepartmentException.DepartmentNotFoundException -> "Department not found: ${exception.message}: ${request.parameterMap.entries}"
-            is DepartmentException.DepartmentNotPersistedException -> "Department not persisted: ${exception.message}: ${request.parameterMap.entries}"
+            is DepartmentException.DepartmentNotFoundException -> {
+                status = HttpStatus.NOT_FOUND
+                "Department not found: ${exception.message}: ${request.parameterMap.entries}"
+            }
+            is DepartmentException.DepartmentNotPersistedException -> {
+                status = HttpStatus.BAD_REQUEST
+                "Department not persisted: ${exception.message}: ${request.parameterMap.entries}"
+            }
         }
-        return ResponseEntity(mutableMap, HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity(mutableMap, status)
     }
 }
