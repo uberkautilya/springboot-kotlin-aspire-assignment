@@ -28,7 +28,10 @@ open class Course {
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courseList", cascade = [CascadeType.PERSIST])
     open var studentList: MutableList<Student> = mutableListOf()
-    open var courseContent: ByteArray = ByteArray(0)
+    @Lob
+    @Column(length = 10000)
+    open var courseContent = byteArrayOf()
+    open var fileName = ""
 
     constructor()
     constructor(
@@ -39,7 +42,8 @@ open class Course {
         teacher: Teacher = Teacher(),
         dept: Department = Department(),
         studentList: MutableList<Student> = mutableListOf(),
-        courseContent: ByteArray = ByteArray(0)
+        courseContent: ByteArray = ByteArray(0),
+        fileName: String = ""
     ) {
         this.id = id
         this.name = name
@@ -49,6 +53,11 @@ open class Course {
         this.dept = dept
         this.studentList = studentList
         this.courseContent = courseContent
+        this.fileName = fileName
+    }
+
+    override fun toString(): String {
+        return "Course(id=$id, name='$name', startDate=$startDate, endDate=$endDate, teacher=${teacher.name}, dept=${dept.name}, studentList=${studentList.forEach { it.name }}, fileName=$fileName)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -65,6 +74,7 @@ open class Course {
         if (dept != other.dept) return false
         if (studentList != other.studentList) return false
         if (!courseContent.contentEquals(other.courseContent)) return false
+        if (fileName != other.fileName) return false
 
         return true
     }
@@ -78,11 +88,8 @@ open class Course {
         result = 31 * result + dept.hashCode()
         result = 31 * result + studentList.hashCode()
         result = 31 * result + courseContent.contentHashCode()
+        result = 31 * result + fileName.hashCode()
         return result
-    }
-
-    override fun toString(): String {
-        return "Course(id=$id, name='$name', startDate=$startDate, endDate=$endDate, teacher=$teacher, dept=$dept, studentList=$studentList, courseContent=${courseContent.contentToString()})"
     }
 
 

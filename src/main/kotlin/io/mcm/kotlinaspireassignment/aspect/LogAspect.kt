@@ -21,8 +21,8 @@ class LogAspect {
         val methodName = proceedPoint.signature.name
         val methodArgs = proceedPoint.args
         val controllerLogger = LoggerFactory.getLogger(controllerClass)
-        controllerLogger.debug("$controllerName.$methodName invoked with arguments: \n${methodArgs.contentToString()}")
+        controllerLogger.info("$controllerName.$methodName invoked with arguments: \n${methodArgs.contentToString()}")
         val result = proceedPoint.proceed()
-        controllerLogger.debug("$controllerName.$methodName returned with result: $result")
+        controllerLogger.info("$controllerName.$methodName result: $result")
     }
 }

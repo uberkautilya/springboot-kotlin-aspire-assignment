@@ -1,7 +1,12 @@
 package io.mcm.kotlinaspireassignment.service
 
+import io.mcm.kotlinaspireassignment.exceptionhandling.exception.CourseManagementException
+import io.mcm.kotlinaspireassignment.model.DepartmentResponse
+import io.mcm.kotlinaspireassignment.model.StudentResponse
 import io.mcm.kotlinaspireassignment.model.TeacherRequest
 import io.mcm.kotlinaspireassignment.model.TeacherResponse
+import io.mcm.kotlinaspireassignment.model.entity.Department
+import io.mcm.kotlinaspireassignment.model.entity.Student
 import io.mcm.kotlinaspireassignment.model.entity.Teacher
 import io.mcm.kotlinaspireassignment.repository.TeacherRepository
 import io.mcm.kotlinaspireassignment.specification.TeacherSpecification
@@ -20,24 +25,45 @@ class TeacherService(val teacherRepository: TeacherRepository) {
     @Value("\${default.pageSize.teachers:3}")
     private var defaultPageSize: Int = 0
 
-    fun findAll() {
-        teacherRepository.findAll()
+    fun findAll(): TeacherResponse {
+        val teacherList = teacherRepository.findAll()
+        return TeacherResponse(teacherList)
     }
 
-    fun findById(id: Int) {
-        teacherRepository.findById(id)
+    fun findById(id: Int): TeacherResponse {
+        val teacherByIdOptional = teacherRepository.findById(id)
+        val teacherById = teacherByIdOptional.orElseThrow { throw CourseManagementException.TeacherNotFoundException() }
+        return TeacherResponse(mutableListOf(teacherById))
     }
 
-    fun save(teacherRequest: TeacherRequest) {
-        teacherRepository.saveAll(teacherRequest.teacherList)
+    fun save(teacherRequest: TeacherRequest): TeacherResponse {
+        val teacherList = teacherRepository.saveAll(teacherRequest.teacherList)
+        return TeacherResponse(teacherList)
     }
 
-    fun update(teacherRequest: TeacherRequest) {
-        teacherRepository.saveAll(teacherRequest.teacherList)
+    fun update(teacherRequest: TeacherRequest): TeacherResponse {
+        val teacherInDBList = mutableListOf<Teacher>()
+        for (teacher in teacherRequest.teacherList) {
+            val teacherInDB = teacherRepository.findById(teacher.id)
+                .orElseThrow { throw CourseManagementException.TeacherNotFoundException() }
+            teacherInDB.name = teacher.name
+            teacherInDB.courseList = teacher.courseList
+            teacherInDB.dept = teacher.dept
+            teacherInDBList.add(teacherInDB)
+        }
+        val savedTeacherList = teacherRepository.saveAll(teacherInDBList)
+        return TeacherResponse(savedTeacherList)
     }
 
-    fun delete(teacherRequest: TeacherRequest) {
+    fun delete(teacherRequest: TeacherRequest): TeacherResponse {
+        val teacherInDBList = mutableListOf<Teacher>()
+        for (teacher in teacherRequest.teacherList) {
+            val teacherInDB = teacherRepository.findById(teacher.id)
+                .orElseThrow { throw CourseManagementException.TeacherNotFoundException() }
+            teacherInDBList.add(teacherInDB)
+        }
         teacherRepository.deleteAll(teacherRequest.teacherList)
+        return TeacherResponse(teacherInDBList)
     }
 
     fun filter(request: TeacherRequest): TeacherResponse {

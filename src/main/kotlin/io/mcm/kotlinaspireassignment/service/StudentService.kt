@@ -1,7 +1,10 @@
 package io.mcm.kotlinaspireassignment.service
 
+import io.mcm.kotlinaspireassignment.exceptionhandling.exception.CourseManagementException
+import io.mcm.kotlinaspireassignment.model.DepartmentResponse
 import io.mcm.kotlinaspireassignment.model.StudentRequest
 import io.mcm.kotlinaspireassignment.model.StudentResponse
+import io.mcm.kotlinaspireassignment.model.entity.Department
 import io.mcm.kotlinaspireassignment.model.entity.Student
 import io.mcm.kotlinaspireassignment.repository.StudentRepository
 import io.mcm.kotlinaspireassignment.specification.StudentSpecification
@@ -20,24 +23,45 @@ class StudentService(val studentRepository: StudentRepository) {
     @Value("\${default.pageSize.students:3}")
     private var defaultPageSize: Int = 0
 
-    fun findAll() {
-        studentRepository.findAll()
+    fun findAll(): StudentResponse {
+        val studentList = studentRepository.findAll()
+        return StudentResponse(studentList)
     }
 
-    fun findById(id: Int) {
-        studentRepository.findById(id)
+    fun findById(id: Int): StudentResponse {
+        val studentById = studentRepository.findById(id)
+        val studentByIdVal = studentById.orElseThrow { throw CourseManagementException.StudentNotFoundException() }
+        return StudentResponse(mutableListOf(studentByIdVal))
     }
 
-    fun save(studentRequest: StudentRequest) {
-        studentRepository.saveAll(studentRequest.studentList)
+    fun save(studentRequest: StudentRequest): StudentResponse {
+        val studentList = studentRepository.saveAll(studentRequest.studentList)
+        return StudentResponse(studentList)
     }
 
-    fun update(studentRequest: StudentRequest) {
-        studentRepository.saveAll(studentRequest.studentList)
+    fun update(studentRequest: StudentRequest): StudentResponse {
+        val studentInDBList = mutableListOf<Student>()
+        for (student in studentRequest.studentList) {
+            val studentInDB = studentRepository.findById(student.id)
+                .orElseThrow { throw CourseManagementException.StudentNotFoundException() }
+            studentInDB.name = student.name
+            studentInDB.courseList = student.courseList
+            studentInDB.dept = student.dept
+            studentInDBList.add(studentInDB)
+        }
+        val savedStudentList = studentRepository.saveAll(studentInDBList)
+        return StudentResponse(savedStudentList)
     }
 
-    fun delete(studentRequest: StudentRequest) {
+    fun delete(studentRequest: StudentRequest): StudentResponse {
+        val studentInDBList = mutableListOf<Student>()
+        for (student in studentRequest.studentList) {
+            val studentInDB = studentRepository.findById(student.id)
+                .orElseThrow { throw CourseManagementException.StudentNotFoundException() }
+            studentInDBList.add(studentInDB)
+        }
         studentRepository.deleteAll(studentRequest.studentList)
+        return StudentResponse(studentInDBList)
     }
 
     fun filter(request: StudentRequest): StudentResponse {

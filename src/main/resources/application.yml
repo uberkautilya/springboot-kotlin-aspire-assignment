@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: kotlin-assignment
   cloud:
     config:
       enabled: false
@@ -8,9 +10,9 @@ spring:
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
-      ddl-auto: 'create-drop'
+      ddl-auto: 'update'
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
 default:
@@ -19,3 +21,17 @@ default:
     departments: 5
     students: 5
     teachers: 5
+logging:
+  level:
+    root: info
+    org.hibernate: error
+  file:
+    name: .\log-files\${spring.application.name}.log
+    max-size: 11Mb
+    max-history: 2
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+#    For OpenAPI - Swagger: This path needs to be provided in Swagger UI to access the endpoints
+springdoc:
+  api-docs:
+    path: /course-management

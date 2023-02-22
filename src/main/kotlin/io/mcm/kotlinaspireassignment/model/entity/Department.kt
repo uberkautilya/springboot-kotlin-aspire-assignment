@@ -61,7 +61,9 @@ open class Department {
     }
 
     override fun toString(): String {
-        return "Department(id=$id, name='$name', courseList=$courseList, teacherList=$teacherList, studentList=$studentList)"
+        return """Department(id=$id, name='$name', courseList=${courseList.forEach { "${it.id} + ${it.name}" }}, 
+            teacherList=${teacherList.forEach { "${it.id} + ${it.name}" }}, 
+            studentList=${studentList.forEach { "${it.id} + ${it.name}" }})"""
     }
 
 }

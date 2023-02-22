@@ -34,7 +34,9 @@ class DataInit {
             teacher = teacher,
             dept = department,
             startDate = LocalDate.of(1992, 7, 6),
-            endDate = LocalDate.now()
+            endDate = LocalDate.now(),
+            fileName = "",
+            courseContent = byteArrayOf()
         )
         teacher = Teacher(name = "Teacher101", dept = department, courseList = mutableListOf(course))
         student = Student(name = "Student101", courseList = mutableListOf(course), dept = department)

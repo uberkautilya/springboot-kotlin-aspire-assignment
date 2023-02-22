@@ -3,39 +3,53 @@ package io.mcm.kotlinaspireassignment.controller
 import io.mcm.kotlinaspireassignment.model.CourseRequest
 import io.mcm.kotlinaspireassignment.model.CourseResponse
 import io.mcm.kotlinaspireassignment.service.CourseService
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
-@RequestMapping("/v1/api/courses")
+@RequestMapping("/api/v1/courses", produces = [MediaType.APPLICATION_JSON_VALUE])
 class CourseController(val courseService: CourseService) {
-    fun findAll() {
-        return courseService.findAll()
+    @GetMapping
+    fun findAll(): ResponseEntity<CourseResponse> {
+        return ResponseEntity.ok(CourseResponse(courseService.findAll()))
     }
-    @GetMapping(name = "/{id}")
-    fun findById(@PathVariable id: Int) {
-        return courseService.findById(id)
+
+    @GetMapping("/{id}")
+    fun findById(@PathVariable id: Int): ResponseEntity<CourseResponse> {
+        return ResponseEntity.ok(courseService.findById(id))
     }
+
     @PostMapping
-    fun save(@RequestBody courseRequest: CourseRequest) {
-        return courseService.save(courseRequest)
+    fun save(@RequestBody courseRequest: CourseRequest): ResponseEntity<CourseResponse> {
+        return ResponseEntity.ok(courseService.save(courseRequest))
     }
+
     @PutMapping
-    fun update(@RequestBody courseRequest: CourseRequest) {
-        return courseService.update(courseRequest)
+    fun update(@RequestBody courseRequest: CourseRequest): ResponseEntity<CourseResponse> {
+        return ResponseEntity.ok(courseService.update(courseRequest))
     }
+
+    @PutMapping(
+        value = (["/uploadContent"]), consumes = [
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE
+        ])
+    fun updateCourseContent(
+        @RequestPart courseId: Int,
+        @RequestPart(value = "courseContent", required = true) courseContent: MultipartFile
+    ): ResponseEntity<CourseResponse> {
+        return ResponseEntity.ok(courseService.updateCourseContent(courseId, courseContent))
+    }
+
     @DeleteMapping
-    fun delete(@RequestBody courseRequest: CourseRequest) {
-        return courseService.delete(courseRequest)
+    fun delete(@RequestBody courseRequest: CourseRequest): ResponseEntity<CourseResponse> {
+        return ResponseEntity.ok(courseService.delete(courseRequest))
     }
+
     @PostMapping("/filter")
-    fun filterFind(@RequestBody courseRequest: CourseRequest): CourseResponse {
-        return courseService.filter(courseRequest)
+    fun filterFind(@RequestBody courseRequest: CourseRequest): ResponseEntity<CourseResponse> {
+        return ResponseEntity.ok(courseService.filter(courseRequest))
     }
 }
