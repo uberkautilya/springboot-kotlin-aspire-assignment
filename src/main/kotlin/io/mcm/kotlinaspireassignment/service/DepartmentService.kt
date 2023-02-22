@@ -1,11 +1,9 @@
 package io.mcm.kotlinaspireassignment.service
 
-import io.mcm.kotlinaspireassignment.exceptionhandling.exception.CourseManagementException
+import io.mcm.kotlinaspireassignment.exceptionhandling.exception.DepartmentException
 import io.mcm.kotlinaspireassignment.model.DepartmentRequest
 import io.mcm.kotlinaspireassignment.model.DepartmentResponse
-import io.mcm.kotlinaspireassignment.model.StudentResponse
 import io.mcm.kotlinaspireassignment.model.entity.Department
-import io.mcm.kotlinaspireassignment.model.entity.Student
 import io.mcm.kotlinaspireassignment.repository.DepartmentRepository
 import io.mcm.kotlinaspireassignment.specification.DepartmentSpecification
 import org.springframework.beans.factory.annotation.Value
@@ -19,7 +17,7 @@ import java.util.*
 class DepartmentService(val departmentRepository: DepartmentRepository) {
 
     @Value("\${default.pageSize.departments:3}")
-    var defaultPageSize: Int = 0
+    var defaultPageSize: Int = 1
 
     fun findAll(): MutableList<Department> {
         return departmentRepository.findAll()
@@ -27,7 +25,7 @@ class DepartmentService(val departmentRepository: DepartmentRepository) {
 
     fun findById(id: Int): Department {
         return departmentRepository.findById(id)
-            .orElseThrow { CourseManagementException.DepartmentNotFoundException() }
+            .orElseThrow { DepartmentException.DepartmentNotFoundException() }
     }
 
     fun save(departmentRequest: DepartmentRequest): MutableList<Department> {
@@ -38,7 +36,7 @@ class DepartmentService(val departmentRepository: DepartmentRepository) {
         val departmentInDBList = mutableListOf<Department>()
         for (department in departmentRequest.departmentList) {
             val departmentInDB = departmentRepository.findById(department.id)
-                .orElseThrow { throw CourseManagementException.DepartmentNotFoundException() }
+                .orElseThrow { throw DepartmentException.DepartmentNotFoundException() }
             departmentInDB.name = department.name
             departmentInDB.courseList = department.courseList
             departmentInDB.teacherList = department.teacherList
@@ -53,7 +51,7 @@ class DepartmentService(val departmentRepository: DepartmentRepository) {
         val departmentInDBList = mutableListOf<Department>()
         for (department in departmentRequest.departmentList) {
             val departmentInDB = departmentRepository.findById(department.id)
-                .orElseThrow { throw CourseManagementException.DepartmentNotFoundException() }
+                .orElseThrow { throw DepartmentException.DepartmentNotFoundException() }
             departmentInDBList.add(departmentInDB)
         }
         departmentRepository.deleteAll(departmentRequest.departmentList)

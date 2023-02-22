@@ -1,12 +1,8 @@
 package io.mcm.kotlinaspireassignment.service
 
-import io.mcm.kotlinaspireassignment.exceptionhandling.exception.CourseManagementException
-import io.mcm.kotlinaspireassignment.model.DepartmentResponse
-import io.mcm.kotlinaspireassignment.model.StudentResponse
+import io.mcm.kotlinaspireassignment.exceptionhandling.exception.TeacherException
 import io.mcm.kotlinaspireassignment.model.TeacherRequest
 import io.mcm.kotlinaspireassignment.model.TeacherResponse
-import io.mcm.kotlinaspireassignment.model.entity.Department
-import io.mcm.kotlinaspireassignment.model.entity.Student
 import io.mcm.kotlinaspireassignment.model.entity.Teacher
 import io.mcm.kotlinaspireassignment.repository.TeacherRepository
 import io.mcm.kotlinaspireassignment.specification.TeacherSpecification
@@ -20,10 +16,10 @@ import java.util.*
 
 @Service
 class TeacherService(val teacherRepository: TeacherRepository) {
-    private val teacherServiceLogger = LoggerFactory.getLogger(TeacherService::class.java)
+    private val logger = LoggerFactory.getLogger(TeacherService::class.java)
 
     @Value("\${default.pageSize.teachers:3}")
-    private var defaultPageSize: Int = 0
+    private var defaultPageSize: Int = 1
 
     fun findAll(): TeacherResponse {
         val teacherList = teacherRepository.findAll()
@@ -32,7 +28,7 @@ class TeacherService(val teacherRepository: TeacherRepository) {
 
     fun findById(id: Int): TeacherResponse {
         val teacherByIdOptional = teacherRepository.findById(id)
-        val teacherById = teacherByIdOptional.orElseThrow { throw CourseManagementException.TeacherNotFoundException() }
+        val teacherById = teacherByIdOptional.orElseThrow { throw TeacherException.TeacherNotFoundException() }
         return TeacherResponse(mutableListOf(teacherById))
     }
 
@@ -45,7 +41,7 @@ class TeacherService(val teacherRepository: TeacherRepository) {
         val teacherInDBList = mutableListOf<Teacher>()
         for (teacher in teacherRequest.teacherList) {
             val teacherInDB = teacherRepository.findById(teacher.id)
-                .orElseThrow { throw CourseManagementException.TeacherNotFoundException() }
+                .orElseThrow { throw TeacherException.TeacherNotFoundException() }
             teacherInDB.name = teacher.name
             teacherInDB.courseList = teacher.courseList
             teacherInDB.dept = teacher.dept
@@ -59,7 +55,7 @@ class TeacherService(val teacherRepository: TeacherRepository) {
         val teacherInDBList = mutableListOf<Teacher>()
         for (teacher in teacherRequest.teacherList) {
             val teacherInDB = teacherRepository.findById(teacher.id)
-                .orElseThrow { throw CourseManagementException.TeacherNotFoundException() }
+                .orElseThrow { throw TeacherException.TeacherNotFoundException() }
             teacherInDBList.add(teacherInDB)
         }
         teacherRepository.deleteAll(teacherRequest.teacherList)
@@ -74,7 +70,7 @@ class TeacherService(val teacherRepository: TeacherRepository) {
             if (Objects.isNull(request.pageSize)) {
                 request.pageSize = defaultPageSize
             }
-            teacherServiceLogger.debug("TeacherService.filter: pageNumber: ${request.pageNo}, pageSize: ${request.pageSize}")
+            logger.debug("TeacherService.filter: pageNumber: ${request.pageNo}, pageSize: ${request.pageSize}")
             val pageable = PageRequest.of(request.pageNo - 1, request.pageSize)
             page = teacherRepository.findAll(TeacherSpecification.build(request), pageable)
         }

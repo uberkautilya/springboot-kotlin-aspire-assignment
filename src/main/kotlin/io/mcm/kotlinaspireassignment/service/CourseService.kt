@@ -1,13 +1,9 @@
 package io.mcm.kotlinaspireassignment.service
 
-import io.mcm.kotlinaspireassignment.exceptionhandling.exception.CourseManagementException
+import io.mcm.kotlinaspireassignment.exceptionhandling.exception.CourseException
 import io.mcm.kotlinaspireassignment.model.CourseRequest
 import io.mcm.kotlinaspireassignment.model.CourseResponse
-import io.mcm.kotlinaspireassignment.model.DepartmentResponse
-import io.mcm.kotlinaspireassignment.model.StudentResponse
 import io.mcm.kotlinaspireassignment.model.entity.Course
-import io.mcm.kotlinaspireassignment.model.entity.Department
-import io.mcm.kotlinaspireassignment.model.entity.Student
 import io.mcm.kotlinaspireassignment.repository.CourseRepository
 import io.mcm.kotlinaspireassignment.specification.CourseSpecification
 import org.apache.commons.lang3.StringUtils
@@ -29,7 +25,7 @@ class CourseService(val courseRepository: CourseRepository) {
     private val logger = LoggerFactory.getLogger(CourseService::class.java)
 
     @Value("\${default.pageSize.courses:3}")
-    private var defaultPageSize: Int = 0
+    private var defaultPageSize: Int = 1
 
     fun findAll(): MutableList<Course> {
         val courseList = courseRepository.findAll()
@@ -39,7 +35,7 @@ class CourseService(val courseRepository: CourseRepository) {
 
     fun findById(id: Int): CourseResponse {
         val courseById =
-            courseRepository.findById(id).orElseThrow { CourseManagementException.CourseNotFoundException() }
+            courseRepository.findById(id).orElseThrow { CourseException.CourseNotFoundException() }
         val courseContentFileName = courseById.fileName
         if (StringUtils.isNotBlank(courseContentFileName)) {
             val fileName = courseContentFileName.split(".")
@@ -61,7 +57,7 @@ class CourseService(val courseRepository: CourseRepository) {
         val courseInDBList = mutableListOf<Course>()
         for (course in courseRequest.courseList) {
             val courseInDB = courseRepository.findById(course.id)
-                .orElseThrow { throw CourseManagementException.CourseNotFoundException() }
+                .orElseThrow { throw CourseException.CourseNotFoundException() }
             courseInDB.name = course.name
             courseInDB.dept = course.dept
             courseInDB.endDate = course.endDate
@@ -78,7 +74,7 @@ class CourseService(val courseRepository: CourseRepository) {
         val courseInDBList = mutableListOf<Course>()
         for (course in courseRequest.courseList) {
             val courseInDB = courseRepository.findById(course.id)
-                .orElseThrow { throw CourseManagementException.CourseNotFoundException() }
+                .orElseThrow { throw CourseException.CourseNotFoundException() }
             courseInDBList.add(courseInDB)
         }
         courseRepository.deleteAll(courseRequest.courseList)
@@ -122,7 +118,7 @@ class CourseService(val courseRepository: CourseRepository) {
 //            Paths.get("D:/Assignment/multipart-file/${fileNameParts[0]}/${fileNameParts[0]}.${fileNameParts[1]}")
 //        Files.write(filePath, courseContent.bytes)
         val course = courseRepository.findById(courseId).orElseThrow {
-            CourseManagementException.CourseNotFoundException("Course Id: $courseId not found")
+            CourseException.CourseNotFoundException("Course Id: $courseId not found")
         }
         course.courseContent = courseContent.bytes
         course.fileName = fileNameWithExtension

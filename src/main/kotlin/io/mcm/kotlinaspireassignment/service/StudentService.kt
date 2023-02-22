@@ -1,10 +1,8 @@
 package io.mcm.kotlinaspireassignment.service
 
-import io.mcm.kotlinaspireassignment.exceptionhandling.exception.CourseManagementException
-import io.mcm.kotlinaspireassignment.model.DepartmentResponse
+import io.mcm.kotlinaspireassignment.exceptionhandling.exception.StudentException
 import io.mcm.kotlinaspireassignment.model.StudentRequest
 import io.mcm.kotlinaspireassignment.model.StudentResponse
-import io.mcm.kotlinaspireassignment.model.entity.Department
 import io.mcm.kotlinaspireassignment.model.entity.Student
 import io.mcm.kotlinaspireassignment.repository.StudentRepository
 import io.mcm.kotlinaspireassignment.specification.StudentSpecification
@@ -14,14 +12,15 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
 class StudentService(val studentRepository: StudentRepository) {
-    private val studentServiceLogger = LoggerFactory.getLogger(StudentService::class.java)
+    private val logger = LoggerFactory.getLogger(StudentService::class.java)
 
     @Value("\${default.pageSize.students:3}")
-    private var defaultPageSize: Int = 0
+    private var defaultPageSize: Int = 1
 
     fun findAll(): StudentResponse {
         val studentList = studentRepository.findAll()
@@ -30,7 +29,7 @@ class StudentService(val studentRepository: StudentRepository) {
 
     fun findById(id: Int): StudentResponse {
         val studentById = studentRepository.findById(id)
-        val studentByIdVal = studentById.orElseThrow { throw CourseManagementException.StudentNotFoundException() }
+        val studentByIdVal = studentById.orElseThrow { throw StudentException.StudentNotFoundException() }
         return StudentResponse(mutableListOf(studentByIdVal))
     }
 
@@ -43,7 +42,7 @@ class StudentService(val studentRepository: StudentRepository) {
         val studentInDBList = mutableListOf<Student>()
         for (student in studentRequest.studentList) {
             val studentInDB = studentRepository.findById(student.id)
-                .orElseThrow { throw CourseManagementException.StudentNotFoundException() }
+                .orElseThrow { throw StudentException.StudentNotFoundException() }
             studentInDB.name = student.name
             studentInDB.courseList = student.courseList
             studentInDB.dept = student.dept
@@ -57,13 +56,14 @@ class StudentService(val studentRepository: StudentRepository) {
         val studentInDBList = mutableListOf<Student>()
         for (student in studentRequest.studentList) {
             val studentInDB = studentRepository.findById(student.id)
-                .orElseThrow { throw CourseManagementException.StudentNotFoundException() }
+                .orElseThrow { throw StudentException.StudentNotFoundException() }
             studentInDBList.add(studentInDB)
         }
         studentRepository.deleteAll(studentRequest.studentList)
         return StudentResponse(studentInDBList)
     }
 
+    @Transactional(readOnly = true)
     fun filter(request: StudentRequest): StudentResponse {
         var page: Page<Student>
         if (Objects.isNull(request.pageNo)) {
@@ -72,7 +72,7 @@ class StudentService(val studentRepository: StudentRepository) {
             if (Objects.isNull(request.pageSize)) {
                 request.pageSize = defaultPageSize
             }
-            studentServiceLogger.debug("StudentService.filter: pageNumber: ${request.pageNo}, pageSize: ${request.pageSize}")
+            logger.debug("StudentService.filter: pageNumber: ${request.pageNo}, pageSize: ${request.pageSize}")
             val pageable = PageRequest.of(request.pageNo - 1, request.pageSize)
             page = studentRepository.findAll(StudentSpecification.build(request), pageable)
         }
