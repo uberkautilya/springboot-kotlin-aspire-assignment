@@ -1,6 +1,8 @@
 package io.mcm.kotlinaspireassignment.model.entity
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
 import javax.persistence.*
@@ -21,12 +23,15 @@ open class Course {
     open var endDate: LocalDate = LocalDate.of(1, 1, 1)
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST])
+    @JsonManagedReference
     open var teacher: Teacher = Teacher()
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST])
+    @JsonManagedReference
     open var dept: Department = Department()
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courseList", cascade = [CascadeType.PERSIST])
+    @JsonBackReference
     open var studentList: MutableList<Student> = mutableListOf()
     @Lob
     @Column(length = 10000)
@@ -57,7 +62,7 @@ open class Course {
     }
 
     override fun toString(): String {
-        return "Course(id=$id, name='$name', startDate=$startDate, endDate=$endDate, teacher=${teacher.name}, dept=${dept.name}, studentList=${studentList.forEach { it.name }}, fileName=$fileName)"
+        return "Course(id=$id, name='$name', startDate=$startDate, endDate=$endDate, teacher=${teacher.name}, dept=${dept.name}, studentList=${studentList.forEach { "${it.id}: ${it.name}" }}, fileName=$fileName)"
     }
 
     override fun equals(other: Any?): Boolean {

@@ -1,6 +1,7 @@
 package io.mcm.kotlinaspireassignment.model.entity
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import javax.persistence.*
 
 @Entity
@@ -13,14 +14,16 @@ open class Student {
     open var name: String = ""
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST])
+    @JsonManagedReference
     open var dept: Department = Department()
 
-    @ManyToMany(cascade = [CascadeType.PERSIST])
+    @ManyToMany(cascade = [CascadeType.PERSIST], fetch = FetchType.EAGER)
     @JoinTable(
         name = "STUDENT_COURSE_MAPPING",
         joinColumns = [JoinColumn(name = "student_id")],
         inverseJoinColumns = [JoinColumn(name = "course_id")]
     )
+    @JsonManagedReference
     open var courseList: MutableList<Course> = mutableListOf()
 
     constructor()
@@ -59,7 +62,7 @@ open class Student {
     }
 
     override fun toString(): String {
-        return "Student(id=$id, name='$name', dept=$dept, courseList=$courseList)"
+        return "Student(id=$id, name='$name', dept=${dept.name}, courseList=${courseList.forEach { "${it.id}: ${it.name}" }})"
     }
 
 }

@@ -8,21 +8,23 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Aspect
-//@Component
+@Component
 class LogAspect {
     @Pointcut("execution(* io.mcm.kotlinaspireassignment.controller.*.*(..))")
     fun aroundController() {
     }
 
     @Around("aroundController()")
-    fun logAroundController(proceedPoint: ProceedingJoinPoint) {
+    fun logAroundController(proceedPoint: ProceedingJoinPoint): Any? {
         val controllerClass = proceedPoint.signature.declaringType
         val controllerName = proceedPoint.signature.declaringType.simpleName
         val methodName = proceedPoint.signature.name
         val methodArgs = proceedPoint.args
         val controllerLogger = LoggerFactory.getLogger(controllerClass)
         controllerLogger.info("$controllerName.$methodName invoked with arguments: \n${methodArgs.contentToString()}")
+
         val result = proceedPoint.proceed()
         controllerLogger.info("$controllerName.$methodName result: $result")
+        return result
     }
 }
