@@ -15,19 +15,22 @@ class TeacherSpecification {
                     return@Specification criteriaBuilder.and(*arrayOfNulls(0))
                 } else {
                     val predicateList = mutableListOf<Predicate>()
-                    if (Objects.nonNull(teacherFilter.id)) {
+                    if (Objects.nonNull(teacherFilter.id) && teacherFilter.id != 0) {
                         predicateList.add(criteriaBuilder.equal(root.get<Any>("id"), teacherFilter.id))
                     }
-                    if (Objects.nonNull(teacherFilter.courseList)) {
+                    if (Objects.nonNull(teacherFilter.courseList) && teacherFilter.courseList.size != 0) {
                         predicateList.add(criteriaBuilder.equal(root.get<Any>("courseList"), teacherFilter.courseList))
                     }
-                    if (Objects.nonNull(teacherFilter.department)) {
+                    if (Objects.nonNull(teacherFilter.department) && teacherFilter.department.id != 0) {
                         predicateList.add(criteriaBuilder.equal(root.get<Any>("department"), teacherFilter.department))
                     }
-                    if (Objects.nonNull(teacherFilter.name)) {
+                    if (Objects.nonNull(teacherFilter.name) && teacherFilter.name != "") {
                         predicateList.add(criteriaBuilder.equal(root.get<Any>("name"), teacherFilter.name))
                     }
-                    if (Objects.nonNull(teacherFilter.orderBy)) {
+                    if (Objects.nonNull(teacherFilter.joiningDate)) {
+                        predicateList.add(criteriaBuilder.equal(root.get<Any>("joiningDate"), teacherFilter.joiningDate))
+                    }
+                    if (Objects.nonNull(teacherFilter.orderBy) && teacherFilter.orderBy != "") {
                         query.orderBy(criteriaBuilder.desc(root.get<Any>(teacherFilter.orderBy)))
                     } else {
                         query.orderBy(criteriaBuilder.asc(root.get<Any>("id")))

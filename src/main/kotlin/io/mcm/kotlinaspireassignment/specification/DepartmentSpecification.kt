@@ -18,25 +18,25 @@ class DepartmentSpecification {
                     if (Objects.nonNull(departmentFilter.id)) {
                         predicateList.add(criteriaBuilder.equal(root.get<Any>("id"), departmentFilter.id))
                     }
-                    if (Objects.nonNull(departmentFilter.courseList)) {
-                        predicateList.add(
-                            criteriaBuilder.equal(
-                                root.get<Any>("courseList"),
-                                departmentFilter.courseList
-                            )
-                        )
-                    }
+//                    if (Objects.nonNull(departmentFilter.courseList)) {
+//                        predicateList.add(
+//                            criteriaBuilder.equal(
+//                                root.get<Any>("courseList"),
+//                                departmentFilter.courseList
+//                            )
+//                        )
+//                    }
                     if (Objects.nonNull(departmentFilter.name)) {
                         predicateList.add(criteriaBuilder.equal(root.get<Any>("name"), departmentFilter.name))
                     }
-                    if (Objects.nonNull(departmentFilter.teacherList)) {
-                        predicateList.add(
-                            criteriaBuilder.equal(
-                                root.get<Any>("teacherList"),
-                                departmentFilter.teacherList
-                            )
-                        )
-                    }
+//                    if (Objects.nonNull(departmentFilter.teacherList)) {
+//                        predicateList.add(
+//                            criteriaBuilder.equal(
+//                                root.get<Any>("teacherList"),
+//                                departmentFilter.teacherList
+//                            )
+//                        )
+//                    }
                     if (Objects.nonNull(departmentFilter.orderBy)) {
                         query.orderBy(criteriaBuilder.desc(root.get<Any>(departmentFilter.orderBy)))
                     } else {

@@ -24,9 +24,9 @@ class StudentSpecification {
                     if (Objects.nonNull(studentFilter.department)) {
                         predicateList.add(criteriaBuilder.equal(root.get<Any>("department"), studentFilter.department))
                     }
-                    if (Objects.nonNull(studentFilter.courseList)) {
-                        predicateList.add(criteriaBuilder.equal(root.get<Any>("courseList"), studentFilter.courseList))
-                    }
+//                    if (Objects.nonNull(studentFilter.courseList)) {
+//                        predicateList.add(criteriaBuilder.equal(root.get<Any>("courseList"), studentFilter.courseList))
+//                    }
                     if (Objects.nonNull(studentFilter.orderBy)) {
                         query.orderBy(criteriaBuilder.desc(root.get<Any>(studentFilter.orderBy)))
                     } else {
