@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Aspect
-@Component
+//@Component
 class LogAspect {
     @Pointcut("execution(* io.mcm.kotlinaspireassignment.controller.*.*(..))")
     fun aroundController() {
