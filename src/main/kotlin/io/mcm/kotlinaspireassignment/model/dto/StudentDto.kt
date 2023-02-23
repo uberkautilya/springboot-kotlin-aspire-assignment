@@ -3,7 +3,7 @@ package io.mcm.kotlinaspireassignment.model.dto
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.mcm.kotlinaspireassignment.model.entity.Student
 
-data class StudentDto(val id: Int, val name: String, val dept: DepartmentDto, val course: CourseDto){
+data class StudentDto(val id: Int, val name: String, val department: DepartmentDto, val course: CourseDto){
     companion object{
         fun getStudentDtoFromEntity(student: Student): StudentDto {
             val studentString = jObjMapper.writeValueAsString(student)
@@ -23,7 +23,7 @@ data class StudentDto(val id: Int, val name: String, val dept: DepartmentDto, va
 
         if (id != other.id) return false
         if (name != other.name) return false
-        if (dept != other.dept) return false
+        if (department != other.department) return false
         if (course != other.course) return false
 
         return true
@@ -32,12 +32,12 @@ data class StudentDto(val id: Int, val name: String, val dept: DepartmentDto, va
     override fun hashCode(): Int {
         var result = id
         result = 31 * result + name.hashCode()
-        result = 31 * result + dept.hashCode()
+        result = 31 * result + department.hashCode()
         result = 31 * result + course.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "StudentDto(id=$id, name='$name', dept=$dept, course=$course)"
+        return "StudentDto(id=$id, name='$name', department=$department, course=$course)"
     }
 }

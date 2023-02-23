@@ -1,15 +1,13 @@
 package io.mcm.kotlinaspireassignment.model.entity
 
-import com.fasterxml.jackson.annotation.JsonBackReference
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonManagedReference
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.*
 import java.time.LocalDate
 import javax.persistence.*
 
 @Entity
 @Table(name = "courses")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator::class, property = "id")
 open class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,21 +15,19 @@ open class Course {
     open var name: String = ""
 
     @JsonProperty("startDate")
-//    @Temporal(TemporalType.DATE) //Available only on Date and Calendar objects
     open var startDate: LocalDate = LocalDate.of(1, 1, 1)
-//    @Temporal(TemporalType.DATE)
     open var endDate: LocalDate = LocalDate.of(1, 1, 1)
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST])
-    @JsonManagedReference
+    @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
+    @JsonBackReference("courseList-in-teacher")
     open var teacher: Teacher = Teacher()
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST])
-    @JsonManagedReference
-    open var dept: Department = Department()
+    @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
+    @JsonBackReference(value = "courseList-in-department")
+    open var department: Department = Department()
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courseList", cascade = [CascadeType.PERSIST])
-    @JsonBackReference
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courseList", cascade = [CascadeType.ALL])
+//    @JsonBackReference(value = "courseList-in-student")
     open var studentList: MutableList<Student> = mutableListOf()
     @Lob
     @Column(length = 10000)
@@ -45,7 +41,7 @@ open class Course {
         startDate: LocalDate = LocalDate.of(1, 1, 1),
         endDate: LocalDate = LocalDate.of(1, 1, 1),
         teacher: Teacher = Teacher(),
-        dept: Department = Department(),
+        department: Department = Department(),
         studentList: MutableList<Student> = mutableListOf(),
         courseContent: ByteArray = ByteArray(0),
         fileName: String = ""
@@ -55,14 +51,14 @@ open class Course {
         this.startDate = startDate
         this.endDate = endDate
         this.teacher = teacher
-        this.dept = dept
+        this.department = department
         this.studentList = studentList
         this.courseContent = courseContent
         this.fileName = fileName
     }
 
     override fun toString(): String {
-        return "Course(id=$id, name='$name', startDate=$startDate, endDate=$endDate, teacher=${teacher.name}, dept=${dept.name}, studentList=${studentList.forEach { "${it.id}: ${it.name}" }}, fileName=$fileName)"
+        return "Course(id=$id, name='$name', startDate=$startDate, endDate=$endDate, teacher=${teacher.name}, department=${department.name}, studentList=${studentList.forEach { "${it.id}: ${it.name}" }}, fileName=$fileName)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -76,7 +72,7 @@ open class Course {
         if (startDate != other.startDate) return false
         if (endDate != other.endDate) return false
         if (teacher != other.teacher) return false
-        if (dept != other.dept) return false
+        if (department != other.department) return false
         if (studentList != other.studentList) return false
         if (!courseContent.contentEquals(other.courseContent)) return false
         if (fileName != other.fileName) return false
@@ -90,7 +86,7 @@ open class Course {
         result = 31 * result + startDate.hashCode()
         result = 31 * result + endDate.hashCode()
         result = 31 * result + teacher.hashCode()
-        result = 31 * result + dept.hashCode()
+        result = 31 * result + department.hashCode()
         result = 31 * result + studentList.hashCode()
         result = 31 * result + courseContent.contentHashCode()
         result = 31 * result + fileName.hashCode()

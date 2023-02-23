@@ -59,7 +59,7 @@ class CourseService(val courseRepository: CourseRepository) {
             val courseInDB = courseRepository.findById(course.id)
                 .orElseThrow { throw CourseException.CourseNotFoundException() }
             courseInDB.name = course.name
-            courseInDB.dept = course.dept
+            courseInDB.department = course.department
             courseInDB.endDate = course.endDate
             courseInDB.startDate = course.startDate
             courseInDB.studentList = course.studentList
@@ -83,15 +83,16 @@ class CourseService(val courseRepository: CourseRepository) {
 
     fun filter(request: CourseRequest): CourseResponse {
         var page: Page<Course>
-        if (Objects.isNull(request.pageNo)) {
-            page = PageImpl(courseRepository.findAll(CourseSpecification.build(request)))
+        val courseFilter = request.courseFilter
+        if (Objects.isNull(courseFilter.pageNo)) {
+            page = PageImpl(courseRepository.findAll(CourseSpecification.build(courseFilter)))
         } else {
-            if (Objects.isNull(request.pageSize)) {
-                request.pageSize = defaultPageSize
+            if (Objects.isNull(courseFilter.pageSize)) {
+                courseFilter.pageSize = defaultPageSize
             }
-            logger.debug("CourseService.filter: pageNumber: ${request.pageNo}, pageSize: ${request.pageSize}")
-            val pageable = PageRequest.of(request.pageNo - 1, request.pageSize)
-            page = courseRepository.findAll(CourseSpecification.build(request), pageable)
+            logger.debug("CourseService.filter: pageNumber: ${courseFilter.pageNo}, pageSize: ${courseFilter.pageSize}")
+            val pageable = PageRequest.of(courseFilter.pageNo - 1, courseFilter.pageSize)
+            page = courseRepository.findAll(CourseSpecification.build(courseFilter), pageable)
         }
         val list: List<Course> = page.content
         val courseResponse = CourseResponse(mutableListOf())

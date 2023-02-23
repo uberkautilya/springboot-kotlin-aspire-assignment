@@ -5,8 +5,6 @@ import io.mcm.kotlinaspireassignment.model.entity.Course
 import org.springframework.web.multipart.MultipartFile
 
 class CourseRequest {
-    var pageSize: Int = 0
-    val pageNo: Int = 0
     val courseFilter: CourseFilter = CourseFilter()
     val courseList: List<Course> = listOf()
     //To add course content for a courseId

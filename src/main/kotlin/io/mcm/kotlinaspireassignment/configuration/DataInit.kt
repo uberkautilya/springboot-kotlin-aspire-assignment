@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 
 @Configuration
@@ -32,14 +33,14 @@ class DataInit {
         course = Course(
             name = "Assignment101",
             teacher = teacher,
-            dept = department,
+            department = department,
             startDate = LocalDate.of(1992, 7, 6),
             endDate = LocalDate.now(),
             fileName = "",
             courseContent = byteArrayOf()
         )
-        teacher = Teacher(name = "Teacher101", dept = department, courseList = mutableListOf(course))
-        student = Student(name = "Student101", courseList = mutableListOf(course), dept = department)
+        teacher = Teacher(name = "Teacher101", joiningDate = SimpleDateFormat("yyyy-MM-dd").parse("2001-02-02"), department = department, courseList = mutableListOf(course))
+        student = Student(name = "Student101", courseList = mutableListOf(course), department = department)
         department = Department(
             name = "Kotlin with SpringBoot",
             courseList = mutableListOf(course),
@@ -47,10 +48,10 @@ class DataInit {
             teacherList = mutableListOf(teacher)
         )
         course.teacher = teacher
-        course.dept = department
-        teacher.dept = department
+        course.department = department
+        teacher.department = department
         teacher.courseList = mutableListOf(course)
-        student.dept = department
+        student.department = department
 
         courseRepository.save(course)
         studentRepository.save(student)

@@ -2,6 +2,7 @@ package io.mcm.kotlinaspireassignment.model.entity
 
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import javax.persistence.*
 
 @Entity
@@ -13,16 +14,16 @@ open class Department {
     open var id: Int = 0
     open var name: String = ""
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "dept", cascade = [CascadeType.ALL])
-    @JsonBackReference
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "department", cascade = [CascadeType.ALL])
+    @JsonManagedReference(value = "courseList-in-department")
     open var courseList: MutableList<Course> = mutableListOf()
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dept", cascade = [CascadeType.REFRESH, CascadeType.PERSIST])
-    @JsonBackReference
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "department", cascade = [CascadeType.ALL, CascadeType.PERSIST])
+    @JsonManagedReference(value = "teacherList-in-department")
     open var teacherList: MutableList<Teacher> = mutableListOf()
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dept", cascade = [CascadeType.PERSIST])
-    @JsonBackReference
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "department", cascade = [CascadeType.ALL])
+    @JsonManagedReference(value = "studentList-in-department")
     open var studentList: MutableList<Student> = mutableListOf()
 
     constructor()

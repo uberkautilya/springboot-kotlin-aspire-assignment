@@ -44,7 +44,7 @@ class TeacherService(val teacherRepository: TeacherRepository) {
                 .orElseThrow { throw TeacherException.TeacherNotFoundException() }
             teacherInDB.name = teacher.name
             teacherInDB.courseList = teacher.courseList
-            teacherInDB.dept = teacher.dept
+            teacherInDB.department = teacher.department
             teacherInDBList.add(teacherInDB)
         }
         val savedTeacherList = teacherRepository.saveAll(teacherInDBList)
@@ -64,15 +64,16 @@ class TeacherService(val teacherRepository: TeacherRepository) {
 
     fun filter(request: TeacherRequest): TeacherResponse {
         var page: Page<Teacher>
-        if (Objects.isNull(request.pageNo)) {
-            page = PageImpl(teacherRepository.findAll(TeacherSpecification.build(request)))
+        val teacherFilter = request.teacherFilter
+        if (Objects.isNull(teacherFilter.pageNo)) {
+            page = PageImpl(teacherRepository.findAll(TeacherSpecification.build(teacherFilter)))
         } else {
-            if (Objects.isNull(request.pageSize)) {
-                request.pageSize = defaultPageSize
+            if (Objects.isNull(teacherFilter.pageSize)) {
+                teacherFilter.pageSize = defaultPageSize
             }
-            logger.debug("TeacherService.filter: pageNumber: ${request.pageNo}, pageSize: ${request.pageSize}")
-            val pageable = PageRequest.of(request.pageNo - 1, request.pageSize)
-            page = teacherRepository.findAll(TeacherSpecification.build(request), pageable)
+            logger.debug("TeacherService.filter: pageNumber: ${teacherFilter.pageNo}, pageSize: ${teacherFilter.pageSize}")
+            val pageable = PageRequest.of(teacherFilter.pageNo - 1, teacherFilter.pageSize)
+            page = teacherRepository.findAll(TeacherSpecification.build(teacherFilter), pageable)
         }
         val list: List<Teacher> = page.content
         val teacherResponse = TeacherResponse(mutableListOf<Teacher>())

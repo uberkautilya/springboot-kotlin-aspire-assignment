@@ -5,7 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.mcm.kotlinaspireassignment.model.entity.Teacher
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-data class TeacherDto(val id: Int, val name: String, val courseList: MutableList<CourseDto>, val dept: DepartmentDto) {
+data class TeacherDto(val id: Int, val name: String, val courseList: MutableList<CourseDto>, val department: DepartmentDto) {
     companion object {
         fun getTeacherDtoFromEntity(teacher: Teacher): TeacherDto {
             val teacherString = jObjMapper.writeValueAsString(teacher)
@@ -26,7 +26,7 @@ data class TeacherDto(val id: Int, val name: String, val courseList: MutableList
         if (id != other.id) return false
         if (name != other.name) return false
         if (courseList != other.courseList) return false
-        if (dept != other.dept) return false
+        if (department != other.department) return false
 
         return true
     }
@@ -35,12 +35,12 @@ data class TeacherDto(val id: Int, val name: String, val courseList: MutableList
         var result = id
         result = 31 * result + name.hashCode()
         result = 31 * result + courseList.hashCode()
-        result = 31 * result + dept.hashCode()
+        result = 31 * result + department.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "TeacherDto(id=$id, name='$name', courseList=$courseList, dept=$dept)"
+        return "TeacherDto(id=$id, name='$name', courseList=$courseList, department=$department)"
     }
 
 }

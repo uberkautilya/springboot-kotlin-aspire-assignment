@@ -4,4 +4,10 @@ import io.mcm.kotlinaspireassignment.model.entity.Student
 
 class StudentFilter: Student() {
     val orderBy: String = ""
+    var pageSize: Int = 0
+    val pageNo: Int = 0
+    override fun toString(): String {
+        return "StudentFilter(orderBy='$orderBy', pageSize=$pageSize, pageNo=$pageNo) ${super.toString()}"
+    }
+
 }

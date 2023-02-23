@@ -45,7 +45,7 @@ class StudentService(val studentRepository: StudentRepository) {
                 .orElseThrow { throw StudentException.StudentNotFoundException() }
             studentInDB.name = student.name
             studentInDB.courseList = student.courseList
-            studentInDB.dept = student.dept
+            studentInDB.department = student.department
             studentInDBList.add(studentInDB)
         }
         val savedStudentList = studentRepository.saveAll(studentInDBList)
@@ -66,15 +66,16 @@ class StudentService(val studentRepository: StudentRepository) {
     @Transactional(readOnly = true)
     fun filter(request: StudentRequest): StudentResponse {
         var page: Page<Student>
-        if (Objects.isNull(request.pageNo)) {
-            page = PageImpl(studentRepository.findAll(StudentSpecification.build(request)))
+        val studentFilter = request.studentFilter
+        if (Objects.isNull(studentFilter.pageNo)) {
+            page = PageImpl(studentRepository.findAll(StudentSpecification.build(studentFilter)))
         } else {
-            if (Objects.isNull(request.pageSize)) {
-                request.pageSize = defaultPageSize
+            if (Objects.isNull(studentFilter.pageSize)) {
+                studentFilter.pageSize = defaultPageSize
             }
-            logger.debug("StudentService.filter: pageNumber: ${request.pageNo}, pageSize: ${request.pageSize}")
-            val pageable = PageRequest.of(request.pageNo - 1, request.pageSize)
-            page = studentRepository.findAll(StudentSpecification.build(request), pageable)
+            logger.debug("StudentService.filter: pageNumber: ${studentFilter.pageNo}, pageSize: ${studentFilter.pageSize}")
+            val pageable = PageRequest.of(studentFilter.pageNo - 1, studentFilter.pageSize)
+            page = studentRepository.findAll(StudentSpecification.build(studentFilter), pageable)
         }
         val list: List<Student> = page.content
         val studentResponse = StudentResponse(mutableListOf<Student>())

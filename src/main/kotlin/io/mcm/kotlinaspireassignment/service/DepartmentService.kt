@@ -60,14 +60,15 @@ class DepartmentService(val departmentRepository: DepartmentRepository) {
 
     fun filter(departmentRequest: DepartmentRequest): DepartmentResponse {
         val page: Page<Department>
-        if (Objects.nonNull(departmentRequest.pageNo)) {
-            page = PageImpl(departmentRepository.findAll(DepartmentSpecification.build(departmentRequest)))
+        val departmentFilter = departmentRequest.departmentFilter
+        if (Objects.nonNull(departmentFilter.pageNo)) {
+            page = PageImpl(departmentRepository.findAll(DepartmentSpecification.build(departmentFilter)))
         } else {
-            if (Objects.isNull(departmentRequest.pageSize)) {
-                departmentRequest.pageSize = defaultPageSize
+            if (Objects.isNull(departmentFilter.pageSize)) {
+                departmentFilter.pageSize = defaultPageSize
             }
-            val pageable = PageRequest.of(departmentRequest.pageNo, departmentRequest.pageSize)
-            page = departmentRepository.findAll(DepartmentSpecification.build(departmentRequest), pageable)
+            val pageable = PageRequest.of(departmentFilter.pageNo, departmentFilter.pageSize)
+            page = departmentRepository.findAll(DepartmentSpecification.build(departmentFilter), pageable)
         }
         val departmentList = page.content
         val departmentResponse = DepartmentResponse(mutableListOf<Department>())
