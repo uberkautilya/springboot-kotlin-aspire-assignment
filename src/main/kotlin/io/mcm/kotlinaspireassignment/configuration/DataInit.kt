@@ -26,36 +26,43 @@ class DataInit {
         courseRepository: CourseRepository,
         teacherRepository: TeacherRepository
     ) = ApplicationRunner {
-        var course: Course
-        var student: Student
-        var teacher = Teacher()
-        var department = Department()
-        course = Course(
-            name = "Assignment101",
-            teacher = teacher,
-            department = department,
-            startDate = LocalDate.of(1992, 7, 6),
-            endDate = LocalDate.now(),
-            fileName = "",
-            courseContent = byteArrayOf()
-        )
-        teacher = Teacher(name = "Teacher101", joiningDate = SimpleDateFormat("yyyy-MM-dd").parse("2001-02-02"), department = department, courseList = mutableListOf(course))
-        student = Student(name = "Student101", courseList = mutableListOf(course), department = department)
-        department = Department(
-            name = "Kotlin with SpringBoot",
-            courseList = mutableListOf(course),
-            studentList = mutableListOf(student),
-            teacherList = mutableListOf(teacher)
-        )
-        course.teacher = teacher
-        course.department = department
-        teacher.department = department
-        teacher.courseList = mutableListOf(course)
-        student.department = department
+        if (!courseRepository.findById(1).isPresent) {
+            var course: Course
+            var student: Student
+            var teacher = Teacher()
+            var department = Department()
+            course = Course(
+                name = "Assignment101",
+                teacher = teacher,
+                department = department,
+                startDate = LocalDate.of(1992, 7, 6),
+                endDate = LocalDate.now(),
+                fileName = "",
+                courseContent = byteArrayOf()
+            )
+            teacher = Teacher(
+                name = "Teacher101",
+                joiningDate = SimpleDateFormat("yyyy-MM-dd").parse("2001-02-02"),
+                department = department,
+                courseList = mutableListOf(course)
+            )
+            student = Student(name = "Student101", courseList = mutableListOf(course), department = department)
+            department = Department(
+                name = "Kotlin with SpringBoot",
+                courseList = mutableListOf(course),
+                studentList = mutableListOf(student),
+                teacherList = mutableListOf(teacher)
+            )
+            course.teacher = teacher
+            course.department = department
+            teacher.department = department
+            teacher.courseList = mutableListOf(course)
+            student.department = department
 
-        courseRepository.save(course)
-        studentRepository.save(student)
-        teacherRepository.save(teacher)
-        departmentRepository.save(department)
+            courseRepository.save(course)
+            studentRepository.save(student)
+            teacherRepository.save(teacher)
+            departmentRepository.save(department)
+        }
     }
 }
