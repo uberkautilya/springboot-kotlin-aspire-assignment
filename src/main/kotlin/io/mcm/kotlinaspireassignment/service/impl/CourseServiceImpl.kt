@@ -38,12 +38,14 @@ class CourseServiceImpl(val courseRepository: CourseRepository): CourseService {
             courseRepository.findById(id).orElseThrow { CourseException.CourseNotFoundException() }
         val courseContentFileName = courseById.fileName
         if (StringUtils.isNotBlank(courseContentFileName)) {
-            val fileName = courseContentFileName.split(".")
+            val fileName = courseContentFileName!!.split(".")
             val parentPath = Paths.get("D:/Assignment/${fileName[0]}")
             Files.createDirectories(parentPath)
             val filePath =
                 Paths.get("D:/Assignment/${fileName[0]}/$courseContentFileName")
             Files.write(filePath, courseById.courseContent)
+        } else {
+            logger.warn("Course content file name is null. Not saving data on disk")
         }
         return CourseResponse(mutableListOf(courseById))
     }
@@ -56,7 +58,10 @@ class CourseServiceImpl(val courseRepository: CourseRepository): CourseService {
     fun update(courseRequest: CourseRequest): CourseResponse {
         val courseInDBList = mutableListOf<Course>()
         for (course in courseRequest.courseList) {
-            val courseInDB = courseRepository.findById(course.id)
+            if (null == course.id) {
+                continue
+            }
+            val courseInDB = courseRepository.findById(course.id!!)
                 .orElseThrow { throw CourseException.CourseNotFoundException() }
             courseInDB.name = course.name
             courseInDB.department = course.department
@@ -73,7 +78,10 @@ class CourseServiceImpl(val courseRepository: CourseRepository): CourseService {
     fun delete(courseRequest: CourseRequest): CourseResponse {
         val courseInDBList = mutableListOf<Course>()
         for (course in courseRequest.courseList) {
-            val courseInDB = courseRepository.findById(course.id)
+            if (null == course.id) {
+                continue
+            }
+            val courseInDB = courseRepository.findById(course.id!!)
                 .orElseThrow { throw CourseException.CourseNotFoundException() }
             courseInDBList.add(courseInDB)
         }
@@ -87,11 +95,11 @@ class CourseServiceImpl(val courseRepository: CourseRepository): CourseService {
         if (Objects.isNull(courseFilter.pageNo)) {
             page = PageImpl(courseRepository.findAll(CourseSpecification.build(courseFilter)))
         } else {
-            if (Objects.isNull(courseFilter.pageSize)) {
+            if (Objects.isNull(courseFilter.pageSize) || courseFilter.pageSize == 0) {
                 courseFilter.pageSize = defaultPageSize
             }
             logger.debug("CourseService.filter: pageNumber: ${courseFilter.pageNo}, pageSize: ${courseFilter.pageSize}")
-            val pageable = PageRequest.of(courseFilter.pageNo - 1, courseFilter.pageSize)
+            val pageable = PageRequest.of(courseFilter.pageNo!! - 1, courseFilter.pageSize!!)
             page = courseRepository.findAll(CourseSpecification.build(courseFilter), pageable)
         }
         val list: List<Course> = page.content

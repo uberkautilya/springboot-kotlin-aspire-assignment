@@ -42,7 +42,10 @@ class StudentServiceImpl(val studentRepository: StudentRepository): StudentServi
     fun update(studentRequest: StudentRequest): StudentResponse {
         val studentInDBList = mutableListOf<Student>()
         for (student in studentRequest.studentList) {
-            val studentInDB = studentRepository.findById(student.id)
+            if (null == student.id) {
+                continue
+            }
+            val studentInDB = studentRepository.findById(student.id!!)
                 .orElseThrow { throw StudentException.StudentNotFoundException() }
             studentInDB.name = student.name
             studentInDB.courseList = student.courseList
@@ -55,7 +58,10 @@ class StudentServiceImpl(val studentRepository: StudentRepository): StudentServi
     fun delete(studentRequest: StudentRequest): StudentResponse {
         val studentInDBList = mutableListOf<Student>()
         for (student in studentRequest.studentList) {
-            val studentInDB = studentRepository.findById(student.id)
+            if (null == student.id) {
+                continue
+            }
+            val studentInDB = studentRepository.findById(student.id!!)
                 .orElseThrow { throw StudentException.StudentNotFoundException() }
             studentInDBList.add(studentInDB)
         }
@@ -70,11 +76,11 @@ class StudentServiceImpl(val studentRepository: StudentRepository): StudentServi
         if (Objects.isNull(studentFilter.pageNo)) {
             page = PageImpl(studentRepository.findAll(StudentSpecification.build(studentFilter)))
         } else {
-            if (Objects.isNull(studentFilter.pageSize)) {
+            if (Objects.isNull(studentFilter.pageSize) || studentFilter.pageSize == 0) {
                 studentFilter.pageSize = defaultPageSize
             }
             logger.debug("StudentService.filter: pageNumber: ${studentFilter.pageNo}, pageSize: ${studentFilter.pageSize}")
-            val pageable = PageRequest.of(studentFilter.pageNo - 1, studentFilter.pageSize)
+            val pageable = PageRequest.of(studentFilter.pageNo!! - 1, studentFilter.pageSize!!)
             page = studentRepository.findAll(StudentSpecification.build(studentFilter), pageable)
         }
         val list: List<Student> = page.content

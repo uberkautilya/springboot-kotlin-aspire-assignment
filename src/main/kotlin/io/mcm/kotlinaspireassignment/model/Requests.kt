@@ -9,7 +9,7 @@ import javax.validation.Valid
 
 class CourseRequest {
     val courseFilter: CourseFilter = CourseFilter()
-    val courseList: List<@Valid Course> = listOf()
+    val courseList: List<Course> = listOf()
 
     //To add course content for a courseId
     val courseId: Int = 0

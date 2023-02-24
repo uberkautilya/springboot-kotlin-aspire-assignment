@@ -15,25 +15,30 @@ class TeacherSpecification {
                     return@Specification criteriaBuilder.and(*arrayOfNulls(0))
                 } else {
                     val predicateList = mutableListOf<Predicate>()
-                    if (Objects.nonNull(teacherFilter.id) && teacherFilter.id != 0) {
+                    if (null != teacherFilter.id && teacherFilter.id != 0) {
                         predicateList.add(criteriaBuilder.equal(root.get<Any>("id"), teacherFilter.id))
                     }
-                    if (Objects.nonNull(teacherFilter.courseList) && teacherFilter.courseList.size != 0) {
+                    if (null != teacherFilter.courseList && teacherFilter.courseList!!.size != 0) {
                         predicateList.add(criteriaBuilder.equal(root.get<Any>("courseList"), teacherFilter.courseList))
                     }
-                    if (Objects.nonNull(teacherFilter.department) && teacherFilter.department.id != 0) {
+                    if (null != teacherFilter.department && teacherFilter.department!!.id != 0) {
                         predicateList.add(criteriaBuilder.equal(root.get<Any>("department"), teacherFilter.department))
                     }
-                    if (Objects.nonNull(teacherFilter.name) && teacherFilter.name != "") {
+                    if (null != teacherFilter.name && teacherFilter.name != "") {
                         predicateList.add(criteriaBuilder.equal(root.get<Any>("name"), teacherFilter.name))
                     }
-                    if (Objects.nonNull(teacherFilter.salary) && teacherFilter.salary != 0L) {
+                    if (null != teacherFilter.salary) {
                         predicateList.add(criteriaBuilder.equal(root.get<Any>("salary"), teacherFilter.salary))
                     }
-                    if (Objects.nonNull(teacherFilter.joiningDate)) {
-                        predicateList.add(criteriaBuilder.equal(root.get<Any>("joiningDate"), teacherFilter.joiningDate))
+                    if (null != teacherFilter.joiningDate) {
+                        predicateList.add(
+                            criteriaBuilder.equal(
+                                root.get<Any>("joiningDate"),
+                                teacherFilter.joiningDate
+                            )
+                        )
                     }
-                    if (Objects.nonNull(teacherFilter.orderBy) && teacherFilter.orderBy != "") {
+                    if (null != teacherFilter.orderBy && teacherFilter.orderBy != "") {
                         query.orderBy(criteriaBuilder.desc(root.get<Any>(teacherFilter.orderBy)))
                     } else {
                         query.orderBy(criteriaBuilder.asc(root.get<Any>("id")))

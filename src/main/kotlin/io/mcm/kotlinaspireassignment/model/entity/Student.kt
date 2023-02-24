@@ -10,8 +10,8 @@ import javax.persistence.*
 open class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    open var id: Int = 0
-    open var name: String = ""
+    open var id: Int? = null
+    open var name: String? = null
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     @JoinTable(
@@ -19,13 +19,13 @@ open class Student {
         joinColumns = [JoinColumn(name = "student_id")],
         inverseJoinColumns = [JoinColumn(name = "course_id")]
     )
-    open var courseList: MutableList<Course> = mutableListOf()
+    open var courseList: MutableList<Course>? = null
 
     constructor()
     constructor(
-        id: Int = 0,
-        name: String = "",
-        courseList: MutableList<Course> = mutableListOf()
+        id: Int? = null,
+        name: String? = null,
+        courseList: MutableList<Course>? = null
     ) {
         this.id = id
         this.name = name
@@ -45,15 +45,17 @@ open class Student {
         return true
     }
 
-    override fun hashCode(): Int {
-        var result = id
-        result = 31 * result + name.hashCode()
-        result = 31 * result + courseList.hashCode()
-        return result
-    }
 
     override fun toString(): String {
-        return "Student(id=$id, name='$name', courseList=${courseList.forEach { "${it.id}: ${it.name}" }})"
+        return """Student(id=$id, name='$name' 
+            |${if (null != courseList) ", courseList=${courseList!!.forEach { "${it.id} + ${it.name}" }}" else ""})""".trimMargin()
+    }
+
+    override fun hashCode(): Int {
+        var result = id ?: 0
+        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (courseList?.hashCode() ?: 0)
+        return result
     }
 
 }

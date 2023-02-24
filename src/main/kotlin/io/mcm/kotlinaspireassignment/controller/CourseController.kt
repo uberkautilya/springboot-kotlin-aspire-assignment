@@ -12,7 +12,6 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/courses", produces = [MediaType.APPLICATION_JSON_VALUE])
-@Validated
 class CourseController(val courseService: CourseServiceImpl) {
     @GetMapping
     fun findAll(): ResponseEntity<CourseResponse> {
@@ -24,6 +23,7 @@ class CourseController(val courseService: CourseServiceImpl) {
         return ResponseEntity.ok(courseService.findById(id))
     }
 
+//    @Validated
     @PostMapping
     fun save(@RequestBody courseRequest: @Valid CourseRequest): ResponseEntity<CourseResponse> {
         return ResponseEntity.ok(courseService.save(courseRequest))

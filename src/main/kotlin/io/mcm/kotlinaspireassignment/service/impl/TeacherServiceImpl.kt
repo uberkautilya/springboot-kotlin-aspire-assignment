@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import java.text.SimpleDateFormat
 import java.util.*
 
 @Service
@@ -41,7 +42,10 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
     fun update(teacherRequest: TeacherRequest): TeacherResponse {
         val teacherInDBList = mutableListOf<Teacher>()
         for (teacher in teacherRequest.teacherList) {
-            val teacherInDB = teacherRepository.findById(teacher.id)
+            if (null == teacher.id) {
+                continue
+            }
+            val teacherInDB = teacherRepository.findById(teacher.id!!)
                 .orElseThrow { throw TeacherException.TeacherNotFoundException() }
             teacherInDB.name = teacher.name
             teacherInDB.courseList = teacher.courseList
@@ -55,7 +59,10 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
     fun delete(teacherRequest: TeacherRequest): TeacherResponse {
         val teacherInDBList = mutableListOf<Teacher>()
         for (teacher in teacherRequest.teacherList) {
-            val teacherInDB = teacherRepository.findById(teacher.id)
+            if (null == teacher.id) {
+                continue
+            }
+            val teacherInDB = teacherRepository.findById(teacher.id!!)
                 .orElseThrow { throw TeacherException.TeacherNotFoundException() }
             teacherInDBList.add(teacherInDB)
         }
@@ -69,11 +76,11 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
         if (Objects.isNull(teacherFilter.pageNo)) {
             page = PageImpl(teacherRepository.findAll(TeacherSpecification.build(teacherFilter)))
         } else {
-            if (Objects.isNull(teacherFilter.pageSize)) {
+            if (Objects.isNull(teacherFilter.pageSize) || teacherFilter.pageSize == 0) {
                 teacherFilter.pageSize = defaultPageSize
             }
             logger.debug("TeacherService.filter: pageNumber: ${teacherFilter.pageNo}, pageSize: ${teacherFilter.pageSize}")
-            val pageable = PageRequest.of(teacherFilter.pageNo - 1, teacherFilter.pageSize)
+            val pageable = PageRequest.of(teacherFilter.pageNo!! - 1, teacherFilter.pageSize!!)
             page = teacherRepository.findAll(TeacherSpecification.build(teacherFilter), pageable)
         }
         val list: List<Teacher> = page.content
@@ -91,10 +98,15 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
 
     fun findAllBySalaryAndJoiningDateBetween(
         salary: Long,
-        joiningDateMin: Date,
-        joiningDateMax: Date
+        joiningDateMin: String,
+        joiningDateMax: String
     ): TeacherResponse {
-        val teacherList = teacherRepository.findAllBySalaryAndJoiningDateBetween(salary, joiningDateMin, joiningDateMax)
+        val sdFormat = SimpleDateFormat("yyyy-MM-dd")
+        val teacherList = teacherRepository.findAllBySalaryAndJoiningDateBetween(
+            salary,
+            sdFormat.parse(joiningDateMin),
+            sdFormat.parse(joiningDateMax)
+        )
         return TeacherResponse(teacherList)
     }
 }

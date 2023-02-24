@@ -10,23 +10,23 @@ import javax.persistence.*
 open class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    open var id: Int = 0
-    open var name: String = ""
+    open var id: Int? = null
+    open var name: String? = null
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "department", cascade = [CascadeType.ALL])
     @JsonManagedReference(value = "courseList-in-department")
-    open var courseList: MutableList<Course> = mutableListOf()
+    open var courseList: MutableList<Course>? = null
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "department", cascade = [CascadeType.ALL])
     @JsonManagedReference(value = "teacherList-in-department")
-    open var teacherList: MutableList<Teacher> = mutableListOf()
+    open var teacherList: MutableList<Teacher>? = null
 
     constructor()
     constructor(
-        id: Int = 0,
-        name: String = "",
-        courseList: MutableList<Course> = mutableListOf(),
-        teacherList: MutableList<Teacher> = mutableListOf(),
+        id: Int? = null,
+        name: String? = null,
+        courseList: MutableList<Course>? = null,
+        teacherList: MutableList<Teacher>? = null
     ) {
         this.id = id
         this.name = name
@@ -48,17 +48,18 @@ open class Department {
         return true
     }
 
-    override fun hashCode(): Int {
-        var result = id
-        result = 31 * result + name.hashCode()
-        result = 31 * result + courseList.hashCode()
-        result = 31 * result + teacherList.hashCode()
-        return result
+    override fun toString(): String {
+        return """Department(id=$id, name='$name'
+            ${if (null != courseList) ", courseList=${courseList!!.forEach { "${it.id} + ${it.name}" }}" else ""}
+            ${if (null != teacherList) ", teacherList=${teacherList!!.forEach { "${it.id} + ${it.name}" }}" else ""})""".trimMargin()
     }
 
-    override fun toString(): String {
-        return """Department(id=$id, name='$name', courseList=${courseList.forEach { "${it.id} + ${it.name}" }}, 
-            teacherList=${teacherList.forEach { "${it.id} + ${it.name}" }})"""
+    override fun hashCode(): Int {
+        var result = id ?: 0
+        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (courseList?.hashCode() ?: 0)
+        result = 31 * result + (teacherList?.hashCode() ?: 0)
+        return result
     }
 
 }

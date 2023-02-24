@@ -3,11 +3,14 @@ package io.mcm.kotlinaspireassignment.controller
 import io.mcm.kotlinaspireassignment.model.TeacherRequest
 import io.mcm.kotlinaspireassignment.model.TeacherResponse
 import io.mcm.kotlinaspireassignment.service.impl.TeacherServiceImpl
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.Date
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 
 @RestController
 @RequestMapping("/api/v1/teachers", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -39,8 +42,8 @@ class TeacherController(val teacherService: TeacherServiceImpl) {
     @GetMapping("/filterBySalaryAndJoiningDate")
     fun findAllBySalaryAndJoiningDateBetween(
         @RequestParam("salary") salary: Long,
-        @RequestParam("joiningDateMin") joiningDateMin: Date,
-        @RequestParam("joiningDateMax") joiningDateMax: Date
+        @RequestParam("joiningDateMin") @DateTimeFormat(style = "yyyy-MM-dd") joiningDateMin: String,
+        @RequestParam("joiningDateMax") @DateTimeFormat(style = "yyyy-MM-dd") joiningDateMax: String
     ): ResponseEntity<TeacherResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(teacherService.findAllBySalaryAndJoiningDateBetween(salary, joiningDateMin, joiningDateMax))
     }

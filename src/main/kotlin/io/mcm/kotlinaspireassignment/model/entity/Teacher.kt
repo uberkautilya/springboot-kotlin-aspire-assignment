@@ -13,29 +13,29 @@ import javax.persistence.*
 open class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    open var id: Int = 0
-    open var name: String = ""
-    open var salary: Long = 0
+    open var id: Int? = null
+    open var name: String? = null
+    open var salary: Long? = null
 
     @Temporal(TemporalType.DATE)
-    open var joiningDate: Date = SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01")
+    open var joiningDate: Date? = null
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "teacher", cascade = [CascadeType.ALL])
     @JsonManagedReference(value = "courseList-in-teacher")
-    open var courseList: MutableList<Course> = mutableListOf()
+    open var courseList: MutableList<Course>? = null
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JsonBackReference(value = "teacherList-in-department")
-    open var department = Department()
+    open var department: Department? = null
 
     constructor()
     constructor(
-        id: Int = 0,
-        name: String = "",
-        courseList: MutableList<Course> = mutableListOf(),
-        department: Department = Department(),
-        joiningDate: Date = SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01"),
-        salary: Long = 0L
+        id: Int? = null,
+        name: String? = null,
+        courseList: MutableList<Course>? = null,
+        department: Department? = null,
+        joiningDate: Date? = null,
+        salary: Long? = null
     ) {
         this.id = id
         this.name = name
@@ -46,7 +46,9 @@ open class Teacher {
     }
 
     override fun toString(): String {
-        return "Teacher(id=$id, name='$name', salary=$salary, joiningDate=${joiningDate}, courseList=${courseList.forEach { "${it.id}: ${it.name}" }}, department=${department.name})"
+        return """Teacher(id=$id, name='$name', salary=$salary, joiningDate=${joiningDate}
+            ${if (null != courseList) ", courseList=${courseList!!.forEach { "${it.id} + ${it.name}" }}" else ""}
+            ${if (null != department) ", department=${department!!.name}" else ""})""".trimMargin()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -66,13 +68,14 @@ open class Teacher {
     }
 
     override fun hashCode(): Int {
-        var result = id
-        result = 31 * result + name.hashCode()
-        result = 31 * result + salary.hashCode()
-        result = 31 * result + joiningDate.hashCode()
-        result = 31 * result + courseList.hashCode()
-        result = 31 * result + department.hashCode()
+        var result = id ?: 0
+        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (salary?.hashCode() ?: 0)
+        result = 31 * result + (joiningDate?.hashCode() ?: 0)
+        result = 31 * result + (courseList?.hashCode() ?: 0)
+        result = 31 * result + (department?.hashCode() ?: 0)
         return result
     }
+
 
 }

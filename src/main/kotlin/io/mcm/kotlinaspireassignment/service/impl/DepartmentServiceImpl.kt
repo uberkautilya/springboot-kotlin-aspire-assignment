@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class DepartmentServiceImpl(val departmentRepository: DepartmentRepository): DepartmentService {
+class DepartmentServiceImpl(val departmentRepository: DepartmentRepository) : DepartmentService {
 
     @Value("\${default.pageSize.departments:3}")
     var defaultPageSize: Int = 1
@@ -36,7 +36,10 @@ class DepartmentServiceImpl(val departmentRepository: DepartmentRepository): Dep
     fun update(departmentRequest: DepartmentRequest): DepartmentResponse {
         val departmentInDBList = mutableListOf<Department>()
         for (department in departmentRequest.departmentList) {
-            val departmentInDB = departmentRepository.findById(department.id)
+            if (null == department.id) {
+                continue
+            }
+            val departmentInDB = departmentRepository.findById(department.id!!)
                 .orElseThrow { throw DepartmentException.DepartmentNotFoundException() }
             departmentInDB.name = department.name
             departmentInDB.courseList = department.courseList
@@ -50,7 +53,10 @@ class DepartmentServiceImpl(val departmentRepository: DepartmentRepository): Dep
     fun delete(departmentRequest: DepartmentRequest): DepartmentResponse {
         val departmentInDBList = mutableListOf<Department>()
         for (department in departmentRequest.departmentList) {
-            val departmentInDB = departmentRepository.findById(department.id)
+            if (null == department.id) {
+                continue
+            }
+            val departmentInDB = departmentRepository.findById(department.id!!)
                 .orElseThrow { throw DepartmentException.DepartmentNotFoundException() }
             departmentInDBList.add(departmentInDB)
         }
@@ -61,13 +67,13 @@ class DepartmentServiceImpl(val departmentRepository: DepartmentRepository): Dep
     fun filter(departmentRequest: DepartmentRequest): DepartmentResponse {
         val page: Page<Department>
         val departmentFilter = departmentRequest.departmentFilter
-        if (Objects.nonNull(departmentFilter.pageNo)) {
+        if (Objects.isNull(departmentFilter.pageNo)) {
             page = PageImpl(departmentRepository.findAll(DepartmentSpecification.build(departmentFilter)))
         } else {
-            if (Objects.isNull(departmentFilter.pageSize)) {
+            if (Objects.isNull(departmentFilter.pageSize) || departmentFilter.pageSize == 0) {
                 departmentFilter.pageSize = defaultPageSize
             }
-            val pageable = PageRequest.of(departmentFilter.pageNo, departmentFilter.pageSize)
+            val pageable = PageRequest.of(departmentFilter.pageNo!! - 1, departmentFilter.pageSize!!)
             page = departmentRepository.findAll(DepartmentSpecification.build(departmentFilter), pageable)
         }
         val departmentList = page.content
