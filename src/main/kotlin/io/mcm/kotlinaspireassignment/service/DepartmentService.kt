@@ -54,7 +54,7 @@ class DepartmentService(val departmentRepository: DepartmentRepository) {
                 .orElseThrow { throw DepartmentException.DepartmentNotFoundException() }
             departmentInDBList.add(departmentInDB)
         }
-        departmentRepository.deleteAll(departmentRequest.departmentList)
+        departmentRepository.deleteAll(departmentInDBList)
         return DepartmentResponse(departmentInDBList)
     }
 

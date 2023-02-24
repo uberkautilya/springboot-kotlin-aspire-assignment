@@ -58,7 +58,7 @@ class TeacherService(val teacherRepository: TeacherRepository) {
                 .orElseThrow { throw TeacherException.TeacherNotFoundException() }
             teacherInDBList.add(teacherInDB)
         }
-        teacherRepository.deleteAll(teacherRequest.teacherList)
+        teacherRepository.deleteAll(teacherInDBList)
         return TeacherResponse(teacherInDBList)
     }
 

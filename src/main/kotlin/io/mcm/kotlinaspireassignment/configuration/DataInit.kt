@@ -60,9 +60,9 @@ class DataInit {
             student.department = department
 
             courseRepository.save(course)
+            departmentRepository.save(department)
             studentRepository.save(student)
             teacherRepository.save(teacher)
-            departmentRepository.save(department)
         }
     }
 }

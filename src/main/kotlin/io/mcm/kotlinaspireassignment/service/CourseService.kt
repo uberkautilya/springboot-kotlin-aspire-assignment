@@ -77,7 +77,7 @@ class CourseService(val courseRepository: CourseRepository) {
                 .orElseThrow { throw CourseException.CourseNotFoundException() }
             courseInDBList.add(courseInDB)
         }
-        courseRepository.deleteAll(courseRequest.courseList)
+        courseRepository.deleteAll(courseInDBList)
         return CourseResponse(courseInDBList)
     }
 

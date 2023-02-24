@@ -59,7 +59,7 @@ class StudentService(val studentRepository: StudentRepository) {
                 .orElseThrow { throw StudentException.StudentNotFoundException() }
             studentInDBList.add(studentInDB)
         }
-        studentRepository.deleteAll(studentRequest.studentList)
+        studentRepository.deleteAll(studentInDBList)
         return StudentResponse(studentInDBList)
     }
 
