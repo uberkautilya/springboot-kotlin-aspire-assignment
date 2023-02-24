@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class TeacherServiceImpl(val teacherRepository: TeacherRepository): TeacherService {
+class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherService {
     private val logger = LoggerFactory.getLogger(TeacherServiceImpl::class.java)
 
     @Value("\${default.pageSize.teachers:3}")
@@ -87,5 +87,14 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository): TeacherServi
             }
         }
         return teacherResponse
+    }
+
+    fun findAllBySalaryAndJoiningDateBetween(
+        salary: Long,
+        joiningDateMin: Date,
+        joiningDateMax: Date
+    ): TeacherResponse {
+        val teacherList = teacherRepository.findAllBySalaryAndJoiningDateBetween(salary, joiningDateMin, joiningDateMax)
+        return TeacherResponse(teacherList)
     }
 }

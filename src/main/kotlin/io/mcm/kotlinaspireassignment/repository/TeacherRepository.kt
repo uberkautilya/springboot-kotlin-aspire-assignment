@@ -8,5 +8,5 @@ import java.util.Date
 
 @Repository
 interface TeacherRepository: JpaRepository<Teacher, Int>, JpaSpecificationExecutor<Teacher> {
-    fun findBySalaryAndJoiningDateBetween(salary: Long, joinDateMin: Date, joinDateMax: Date)
+    fun findAllBySalaryAndJoiningDateBetween(salary: Long, joinDateMin: Date, joinDateMax: Date): MutableList<Teacher>
 }

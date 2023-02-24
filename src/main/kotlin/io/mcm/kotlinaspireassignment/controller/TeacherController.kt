@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.Date
 
 @RestController
 @RequestMapping("/api/v1/teachers", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -34,5 +35,12 @@ class TeacherController(val teacherService: TeacherServiceImpl) {
     @PostMapping("/filter")
     fun filter(@RequestBody teacherRequest: TeacherRequest): ResponseEntity<TeacherResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(teacherService.filter(teacherRequest))
+    }
+    fun findAllBySalaryAndJoiningDateBetween(
+        @RequestParam("salary") salary: Long,
+        @RequestParam("joiningDateMin") joiningDateMin: Date,
+        @RequestParam("joiningDateMax") joiningDateMax: Date
+    ): ResponseEntity<TeacherResponse> {
+        return ResponseEntity.status(HttpStatus.OK).body(teacherService.findAllBySalaryAndJoiningDateBetween(salary, joiningDateMin, joiningDateMax))
     }
 }
