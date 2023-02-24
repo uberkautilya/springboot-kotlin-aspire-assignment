@@ -42,6 +42,7 @@ class DataInit {
             )
             teacher = Teacher(
                 name = "Teacher101",
+                salary = 100L,
                 joiningDate = SimpleDateFormat("yyyy-MM-dd").parse("2001-02-02"),
                 department = department,
                 courseList = mutableListOf(course)

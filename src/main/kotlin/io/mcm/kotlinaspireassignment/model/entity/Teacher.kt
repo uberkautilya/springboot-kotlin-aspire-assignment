@@ -15,6 +15,7 @@ open class Teacher {
     @GeneratedValue(strategy = GenerationType.AUTO)
     open var id: Int = 0
     open var name: String = ""
+    open var salary: Long = 0
 
     @Temporal(TemporalType.DATE)
     open var joiningDate: Date = SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01")
@@ -33,17 +34,19 @@ open class Teacher {
         name: String = "",
         courseList: MutableList<Course> = mutableListOf(),
         department: Department = Department(),
-        joiningDate: Date = SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01")
+        joiningDate: Date = SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01"),
+        salary: Long = 0L
     ) {
         this.id = id
         this.name = name
         this.courseList = courseList
         this.department = department
         this.joiningDate = joiningDate
+        this.salary = salary
     }
 
     override fun toString(): String {
-        return "Teacher(id=$id, name='$name', joiningDate=${joiningDate}, courseList=${courseList.forEach { "${it.id}: ${it.name}" }}, department=${department.name})"
+        return "Teacher(id=$id, name='$name', salary=$salary, joiningDate=${joiningDate}, courseList=${courseList.forEach { "${it.id}: ${it.name}" }}, department=${department.name})"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -54,6 +57,7 @@ open class Teacher {
 
         if (id != other.id) return false
         if (name != other.name) return false
+        if (salary != other.salary) return false
         if (joiningDate != other.joiningDate) return false
         if (courseList != other.courseList) return false
         if (department != other.department) return false
@@ -64,6 +68,7 @@ open class Teacher {
     override fun hashCode(): Int {
         var result = id
         result = 31 * result + name.hashCode()
+        result = 31 * result + salary.hashCode()
         result = 31 * result + joiningDate.hashCode()
         result = 31 * result + courseList.hashCode()
         result = 31 * result + department.hashCode()

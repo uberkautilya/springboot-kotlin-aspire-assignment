@@ -27,6 +27,9 @@ class TeacherSpecification {
                     if (Objects.nonNull(teacherFilter.name) && teacherFilter.name != "") {
                         predicateList.add(criteriaBuilder.equal(root.get<Any>("name"), teacherFilter.name))
                     }
+                    if (Objects.nonNull(teacherFilter.salary) && teacherFilter.salary != 0L) {
+                        predicateList.add(criteriaBuilder.equal(root.get<Any>("salary"), teacherFilter.salary))
+                    }
                     if (Objects.nonNull(teacherFilter.joiningDate)) {
                         predicateList.add(criteriaBuilder.equal(root.get<Any>("joiningDate"), teacherFilter.joiningDate))
                     }
