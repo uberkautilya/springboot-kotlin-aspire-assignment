@@ -2,7 +2,7 @@ package io.mcm.kotlinaspireassignment.controller
 
 import io.mcm.kotlinaspireassignment.model.TeacherRequest
 import io.mcm.kotlinaspireassignment.model.TeacherResponse
-import io.mcm.kotlinaspireassignment.service.TeacherService
+import io.mcm.kotlinaspireassignment.service.impl.TeacherServiceImpl
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/teachers", produces = [MediaType.APPLICATION_JSON_VALUE])
-class TeacherController(val teacherService: TeacherService) {
+class TeacherController(val teacherService: TeacherServiceImpl) {
     @GetMapping
     fun findAll(): ResponseEntity<TeacherResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(teacherService.findAll())

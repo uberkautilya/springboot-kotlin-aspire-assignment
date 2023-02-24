@@ -3,6 +3,7 @@ package io.mcm.kotlinaspireassignment.controller
 import io.mcm.kotlinaspireassignment.model.CourseRequest
 import io.mcm.kotlinaspireassignment.model.CourseResponse
 import io.mcm.kotlinaspireassignment.service.CourseService
+import io.mcm.kotlinaspireassignment.service.impl.CourseServiceImpl
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -10,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/api/v1/courses", produces = [MediaType.APPLICATION_JSON_VALUE])
-class CourseController(val courseService: CourseService) {
+class CourseController(val courseService: CourseServiceImpl) {
     @GetMapping
     fun findAll(): ResponseEntity<CourseResponse> {
         return ResponseEntity.ok(CourseResponse(courseService.findAll()))

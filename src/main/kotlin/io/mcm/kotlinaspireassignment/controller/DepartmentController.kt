@@ -2,8 +2,7 @@ package io.mcm.kotlinaspireassignment.controller
 
 import io.mcm.kotlinaspireassignment.model.DepartmentRequest
 import io.mcm.kotlinaspireassignment.model.DepartmentResponse
-import io.mcm.kotlinaspireassignment.model.entity.Department
-import io.mcm.kotlinaspireassignment.service.DepartmentService
+import io.mcm.kotlinaspireassignment.service.impl.DepartmentServiceImpl
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -19,7 +18,7 @@ import java.util.*
 
 @RestController
 @RequestMapping("/api/v1/departments", produces = [MediaType.APPLICATION_JSON_VALUE])
-class DepartmentController(val departmentService: DepartmentService) {
+class DepartmentController(val departmentService: DepartmentServiceImpl) {
     @GetMapping
     fun findAll(): ResponseEntity<DepartmentResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(DepartmentResponse(departmentService.findAll()))
