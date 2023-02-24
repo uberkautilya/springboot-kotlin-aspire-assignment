@@ -9,7 +9,10 @@ import org.springframework.boot.runApplication
 @SpringBootApplication
 @OpenAPIDefinition(
 	servers = [Server(url = "/course-management", description = "Default server URL")],
-	info = Info(title = "Course Management API", version = "1.0", description = "Course Management with APIs that provide CRUD functionality on Course, Teachers, Departments and Students")
+	info = Info(
+		title = "Course Management API", version = "1.0",
+		description = "Course Management with APIs that provide CRUD functionality on Course, Teachers, Departments and Students"
+	)
 )
 class KotlinAspireAssignmentApplication
 

@@ -1,6 +1,5 @@
 package io.mcm.kotlinaspireassignment.model
 
-import io.mcm.kotlinaspireassignment.model.dto.DepartmentFilter
 import io.mcm.kotlinaspireassignment.model.entity.Department
 
 class DepartmentRequest {

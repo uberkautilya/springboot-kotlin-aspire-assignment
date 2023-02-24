@@ -108,16 +108,13 @@ class CourseService(val courseRepository: CourseRepository) {
     }
 
     fun updateCourseContent(courseId: Int, courseContent: MultipartFile): CourseResponse {
-        val fileNameWithExtension = courseContent.originalFilename
-        logger.debug("courseContent.originalFilename: $fileNameWithExtension")
-        logger.debug("courseContent.size: ${courseContent.size}")
-        val fileNameParts = fileNameWithExtension?.split(".")
-            ?: throw InvalidFileNameException("courseContent", "$fileNameWithExtension is not a valid file name")
-//        val parentPath = Paths.get("D:/Assignment/multipart-file/${fileNameParts[0]}")
-//        Files.createDirectories(parentPath)
-//        val filePath =
-//            Paths.get("D:/Assignment/multipart-file/${fileNameParts[0]}/${fileNameParts[0]}.${fileNameParts[1]}")
-//        Files.write(filePath, courseContent.bytes)
+        if (0 == courseId) {
+            throw CourseException.CourseNotFoundException()
+        }
+        if (null == courseContent.originalFilename || courseContent.originalFilename == "") {
+            throw CourseException.InvalidFileNameForCourseContentException()
+        }
+        val fileNameWithExtension: String = courseContent!!.originalFilename!!
         val course = courseRepository.findById(courseId).orElseThrow {
             CourseException.CourseNotFoundException("Course Id: $courseId not found")
         }

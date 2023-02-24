@@ -1,6 +1,6 @@
 package io.mcm.kotlinaspireassignment.specification
 
-import io.mcm.kotlinaspireassignment.model.dto.StudentFilter
+import io.mcm.kotlinaspireassignment.model.StudentFilter
 import io.mcm.kotlinaspireassignment.model.entity.Student
 import org.springframework.data.jpa.domain.Specification
 import java.util.*

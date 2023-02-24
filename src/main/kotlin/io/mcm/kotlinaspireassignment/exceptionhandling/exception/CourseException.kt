@@ -8,4 +8,5 @@ sealed class CourseException(
 ) : Throwable(message, cause, enableSuppression, writableStackTrace) {
     class CourseNotFoundException(message: String? = null) : CourseException(message = message)
     class CourseNotPersistedException(message: String? = null): CourseException(message = message)
+    class InvalidFileNameForCourseContentException(message: String? = null): CourseException(message = message)
 }

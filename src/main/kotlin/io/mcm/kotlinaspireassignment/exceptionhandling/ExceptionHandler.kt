@@ -27,6 +27,10 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
                 status = HttpStatus.BAD_REQUEST
                 "Course not persisted: ${exception.message}: ${request.parameterMap.entries}"
             }
+            is CourseException.InvalidFileNameForCourseContentException -> {
+                status = HttpStatus.NO_CONTENT
+                "Course content not updated: ${exception.message}: ${request.parameterMap.entries}"
+            }
         }
         return ResponseEntity(mutableMap, status)
     }

@@ -1,6 +1,5 @@
 package io.mcm.kotlinaspireassignment.model
 
-import io.mcm.kotlinaspireassignment.model.dto.CourseFilter
 import io.mcm.kotlinaspireassignment.model.entity.Course
 import org.springframework.web.multipart.MultipartFile
 

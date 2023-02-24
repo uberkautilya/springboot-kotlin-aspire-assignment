@@ -42,8 +42,8 @@ class ProductsController {
         )
     }
 
-    private fun localizeDate(locale: Locale, date: LocalDate): String {
-        val date = SimpleDateFormat("yyyy-MM-dd").parse(date.toString())
+    private fun localizeDate(locale: Locale, localDate: LocalDate): String {
+        val date = SimpleDateFormat("yyyy-MM-dd").parse(localDate.toString())
         val localeDate = SimpleDateFormat("yyyy-MM-dd", locale)
         return localeDate.format(date).toString()
 //        return DateTimeFormatter.ISO_LOCAL_DATE.format(date)

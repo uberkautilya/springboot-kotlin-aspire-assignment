@@ -1,6 +1,6 @@
 package io.mcm.kotlinaspireassignment.specification
 
-import io.mcm.kotlinaspireassignment.model.dto.CourseFilter
+import io.mcm.kotlinaspireassignment.model.CourseFilter
 import io.mcm.kotlinaspireassignment.model.entity.Course
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Component
