@@ -1,6 +1,5 @@
 package io.mcm.kotlinaspireassignment.model.entity
 
-import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import javax.persistence.*
@@ -18,13 +17,9 @@ open class Department {
     @JsonManagedReference(value = "courseList-in-department")
     open var courseList: MutableList<Course> = mutableListOf()
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "department", cascade = [CascadeType.ALL, CascadeType.PERSIST])
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "department", cascade = [CascadeType.ALL])
     @JsonManagedReference(value = "teacherList-in-department")
     open var teacherList: MutableList<Teacher> = mutableListOf()
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "department", cascade = [CascadeType.ALL])
-    @JsonManagedReference(value = "studentList-in-department")
-    open var studentList: MutableList<Student> = mutableListOf()
 
     constructor()
     constructor(
@@ -32,13 +27,11 @@ open class Department {
         name: String = "",
         courseList: MutableList<Course> = mutableListOf(),
         teacherList: MutableList<Teacher> = mutableListOf(),
-        studentList: MutableList<Student> = mutableListOf()
     ) {
         this.id = id
         this.name = name
         this.courseList = courseList
         this.teacherList = teacherList
-        this.studentList = studentList
     }
 
     override fun equals(other: Any?): Boolean {
@@ -51,7 +44,6 @@ open class Department {
         if (name != other.name) return false
         if (courseList != other.courseList) return false
         if (teacherList != other.teacherList) return false
-        if (studentList != other.studentList) return false
 
         return true
     }
@@ -61,14 +53,12 @@ open class Department {
         result = 31 * result + name.hashCode()
         result = 31 * result + courseList.hashCode()
         result = 31 * result + teacherList.hashCode()
-        result = 31 * result + studentList.hashCode()
         return result
     }
 
     override fun toString(): String {
         return """Department(id=$id, name='$name', courseList=${courseList.forEach { "${it.id} + ${it.name}" }}, 
-            teacherList=${teacherList.forEach { "${it.id} + ${it.name}" }}, 
-            studentList=${studentList.forEach { "${it.id} + ${it.name}" }})"""
+            teacherList=${teacherList.forEach { "${it.id} + ${it.name}" }})"""
     }
 
 }

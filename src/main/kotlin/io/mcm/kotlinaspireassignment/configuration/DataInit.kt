@@ -47,18 +47,17 @@ class DataInit {
                 department = department,
                 courseList = mutableListOf(course)
             )
-            student = Student(name = "Student101", courseList = mutableListOf(course), department = department)
+            student = Student(name = "Student101", courseList = mutableListOf(course))
             department = Department(
                 name = "Kotlin with SpringBoot",
                 courseList = mutableListOf(course),
-                studentList = mutableListOf(student),
                 teacherList = mutableListOf(teacher)
             )
             course.teacher = teacher
             course.department = department
             teacher.department = department
             teacher.courseList = mutableListOf(course)
-            student.department = department
+            course.studentList = mutableListOf(student)
 
             courseRepository.save(course)
             departmentRepository.save(department)

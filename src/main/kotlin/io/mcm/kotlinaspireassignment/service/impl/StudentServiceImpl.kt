@@ -46,7 +46,6 @@ class StudentServiceImpl(val studentRepository: StudentRepository): StudentServi
                 .orElseThrow { throw StudentException.StudentNotFoundException() }
             studentInDB.name = student.name
             studentInDB.courseList = student.courseList
-            studentInDB.department = student.department
             studentInDBList.add(studentInDB)
         }
         val savedStudentList = studentRepository.saveAll(studentInDBList)

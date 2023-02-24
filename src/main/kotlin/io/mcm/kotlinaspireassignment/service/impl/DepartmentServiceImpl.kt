@@ -41,7 +41,6 @@ class DepartmentServiceImpl(val departmentRepository: DepartmentRepository): Dep
             departmentInDB.name = department.name
             departmentInDB.courseList = department.courseList
             departmentInDB.teacherList = department.teacherList
-            departmentInDB.studentList = department.studentList
             departmentInDBList.add(departmentInDB)
         }
         val savedDepartmentList = departmentRepository.saveAll(departmentInDBList)

@@ -36,6 +36,7 @@ class TeacherController(val teacherService: TeacherServiceImpl) {
     fun filter(@RequestBody teacherRequest: TeacherRequest): ResponseEntity<TeacherResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(teacherService.filter(teacherRequest))
     }
+    @GetMapping("/filterBySalaryAndJoiningDate")
     fun findAllBySalaryAndJoiningDateBetween(
         @RequestParam("salary") salary: Long,
         @RequestParam("joiningDateMin") joiningDateMin: Date,

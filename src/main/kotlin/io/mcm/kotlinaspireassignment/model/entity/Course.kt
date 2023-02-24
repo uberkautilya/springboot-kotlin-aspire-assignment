@@ -3,6 +3,7 @@ package io.mcm.kotlinaspireassignment.model.entity
 import com.fasterxml.jackson.annotation.*
 import java.time.LocalDate
 import javax.persistence.*
+import javax.validation.constraints.NotEmpty
 
 @Entity
 @Table(name = "courses")
@@ -12,6 +13,8 @@ open class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     open var id: Int = 0
+
+    @NotEmpty(message = "Course name cannot be blank")
     open var name: String = ""
 
     @JsonProperty("startDate")
@@ -27,8 +30,8 @@ open class Course {
     open var department: Department = Department()
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courseList", cascade = [CascadeType.ALL])
-//    @JsonBackReference(value = "courseList-in-student")
     open var studentList: MutableList<Student> = mutableListOf()
+
     @Lob
     @Column(length = 10000)
     open var courseContent = byteArrayOf()

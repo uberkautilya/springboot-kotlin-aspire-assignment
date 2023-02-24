@@ -2,15 +2,17 @@ package io.mcm.kotlinaspireassignment.controller
 
 import io.mcm.kotlinaspireassignment.model.CourseRequest
 import io.mcm.kotlinaspireassignment.model.CourseResponse
-import io.mcm.kotlinaspireassignment.service.CourseService
 import io.mcm.kotlinaspireassignment.service.impl.CourseServiceImpl
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/courses", produces = [MediaType.APPLICATION_JSON_VALUE])
+@Validated
 class CourseController(val courseService: CourseServiceImpl) {
     @GetMapping
     fun findAll(): ResponseEntity<CourseResponse> {
@@ -23,7 +25,7 @@ class CourseController(val courseService: CourseServiceImpl) {
     }
 
     @PostMapping
-    fun save(@RequestBody courseRequest: CourseRequest): ResponseEntity<CourseResponse> {
+    fun save(@RequestBody courseRequest: @Valid CourseRequest): ResponseEntity<CourseResponse> {
         return ResponseEntity.ok(courseService.save(courseRequest))
     }
 
@@ -36,7 +38,8 @@ class CourseController(val courseService: CourseServiceImpl) {
         value = (["/uploadContent"]), consumes = [
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE
-        ])
+        ]
+    )
     fun updateCourseContent(
         @RequestPart courseId: Int,
         @RequestPart(value = "courseContent", required = true) courseContent: MultipartFile
