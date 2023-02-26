@@ -6,13 +6,15 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.mcm.kotlinaspireassignment.model.entity.Course
 import java.time.LocalDate
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
 
 val jObjMapper = jacksonObjectMapper()
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class CourseDto(
     val id: Int?,
-    @NotBlank(message = "Course name cannot be blank")
+    @field:NotNull(message = "Course name cannot be null")
+    @field:NotBlank(message = "Course name cannot be blank")
     val name: String?,
     val startDate: LocalDate?,
     val endDate: LocalDate?,
@@ -30,6 +32,16 @@ data class CourseDto(
 
         fun getCourseEntityFromDto(courseDto: CourseDto): Course {
             val courseDtoString = jObjMapper.writeValueAsString(courseDto)
+            return jObjMapper.readValue(courseDtoString)
+        }
+
+        fun getCourseDtoListFromEntityList(courseList: List<Course>): List<CourseDto> {
+            val courseString = jObjMapper.writeValueAsString(courseList)
+            return jObjMapper.readValue(courseString)
+        }
+
+        fun getCourseEntityListFromDtoList(courseDtoList: List<CourseDto>): List<Course> {
+            val courseDtoString = jObjMapper.writeValueAsString(courseDtoList)
             return jObjMapper.readValue(courseDtoString)
         }
     }
@@ -52,7 +64,6 @@ data class CourseDto(
 
         return true
     }
-
 
 
     override fun toString(): String {

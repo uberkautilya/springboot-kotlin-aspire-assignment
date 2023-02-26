@@ -1,14 +1,17 @@
 package io.mcm.kotlinaspireassignment.model
 
-import io.mcm.kotlinaspireassignment.model.entity.Course
-import io.mcm.kotlinaspireassignment.model.entity.Department
-import io.mcm.kotlinaspireassignment.model.entity.Student
-import io.mcm.kotlinaspireassignment.model.entity.Teacher
+import io.mcm.kotlinaspireassignment.model.dto.CourseDto
+import io.mcm.kotlinaspireassignment.model.dto.DepartmentDto
+import io.mcm.kotlinaspireassignment.model.dto.StudentDto
+import io.mcm.kotlinaspireassignment.model.dto.TeacherDto
 import org.springframework.web.multipart.MultipartFile
+import javax.validation.Valid
 
 class CourseRequest {
     val courseFilter: CourseFilter = CourseFilter()
-    val courseList: List<Course> = listOf()
+
+    @field:Valid
+    val courseList: List<CourseDto> = listOf()
 
     //To add course content for a courseId
     val courseId: Int = 0
@@ -17,15 +20,15 @@ class CourseRequest {
 
 class DepartmentRequest {
     val departmentFilter: DepartmentFilter = DepartmentFilter()
-    val departmentList: List<Department> = listOf()
+    val departmentList: List<DepartmentDto> = listOf()
 }
 
 class TeacherRequest {
     val teacherFilter: TeacherFilter = TeacherFilter()
-    val teacherList: List<Teacher> = listOf()
+    val teacherList: List<TeacherDto> = listOf()
 }
 
 class StudentRequest {
     val studentFilter: StudentFilter = StudentFilter()
-    val studentList: List<Student> = listOf()
+    val studentList: List<StudentDto> = listOf()
 }

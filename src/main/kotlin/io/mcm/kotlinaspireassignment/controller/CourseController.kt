@@ -7,6 +7,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/courses", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -22,12 +23,12 @@ class CourseController(val courseService: CourseService) {
     }
 
     @PostMapping
-    fun save(@RequestBody courseRequest: CourseRequest): ResponseEntity<CourseResponse> {
+    fun save(@Valid @RequestBody courseRequest: CourseRequest): ResponseEntity<CourseResponse> {
         return ResponseEntity.ok(courseService.save(courseRequest))
     }
 
     @PutMapping
-    fun update(@RequestBody courseRequest: CourseRequest): ResponseEntity<CourseResponse> {
+    fun update(@Valid @RequestBody courseRequest: CourseRequest): ResponseEntity<CourseResponse> {
         return ResponseEntity.ok(courseService.update(courseRequest))
     }
 

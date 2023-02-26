@@ -23,6 +23,15 @@ data class DepartmentDto(
             val departmentDtoString = jObjMapper.writeValueAsString(departmentDto)
             return jObjMapper.readValue<Department>(departmentDtoString)
         }
+        fun getDepartmentDtoListFromEntityList(departmentList: List<Department>): List<DepartmentDto> {
+            val departmentString = jObjMapper.writeValueAsString(departmentList)
+            return jObjMapper.readValue(departmentString)
+        }
+
+        fun getDepartmentEntityListFromDtoList(departmentDtoList: List<DepartmentDto>): List<Department> {
+            val departmentDtoString = jObjMapper.writeValueAsString(departmentDtoList)
+            return jObjMapper.readValue(departmentDtoString)
+        }
     }
 
     override fun equals(other: Any?): Boolean {

@@ -3,6 +3,7 @@ package io.mcm.kotlinaspireassignment.service.impl
 import io.mcm.kotlinaspireassignment.exceptionhandling.exception.TeacherException
 import io.mcm.kotlinaspireassignment.model.TeacherRequest
 import io.mcm.kotlinaspireassignment.model.TeacherResponse
+import io.mcm.kotlinaspireassignment.model.dto.TeacherDto
 import io.mcm.kotlinaspireassignment.model.entity.Teacher
 import io.mcm.kotlinaspireassignment.repository.TeacherRepository
 import io.mcm.kotlinaspireassignment.service.TeacherService
@@ -35,13 +36,15 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
     }
 
     override fun save(teacherRequest: TeacherRequest): TeacherResponse {
-        val teacherList = teacherRepository.saveAll(teacherRequest.teacherList)
+        val teacherRequestList = TeacherDto.getTeacherEntityListFromDtoList(teacherRequest.teacherList)
+        val teacherList = teacherRepository.saveAll(teacherRequestList)
         return TeacherResponse(teacherList)
     }
 
     override fun update(teacherRequest: TeacherRequest): TeacherResponse {
+        val teacherRequestList = TeacherDto.getTeacherEntityListFromDtoList(teacherRequest.teacherList)
         val teacherInDBList = mutableListOf<Teacher>()
-        for (teacher in teacherRequest.teacherList) {
+        for (teacher in teacherRequestList) {
             if (null == teacher.id) {
                 continue
             }
@@ -62,7 +65,7 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
             if (null == teacher.id) {
                 continue
             }
-            val teacherInDB = teacherRepository.findById(teacher.id!!)
+            val teacherInDB = teacherRepository.findById(teacher.id)
                 .orElseThrow { throw TeacherException.TeacherNotFoundException() }
             teacherInDBList.add(teacherInDB)
         }

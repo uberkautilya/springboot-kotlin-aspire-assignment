@@ -3,6 +3,7 @@ package io.mcm.kotlinaspireassignment.service.impl
 import io.mcm.kotlinaspireassignment.exceptionhandling.exception.CourseException
 import io.mcm.kotlinaspireassignment.model.CourseRequest
 import io.mcm.kotlinaspireassignment.model.CourseResponse
+import io.mcm.kotlinaspireassignment.model.dto.CourseDto
 import io.mcm.kotlinaspireassignment.model.entity.Course
 import io.mcm.kotlinaspireassignment.repository.CourseRepository
 import io.mcm.kotlinaspireassignment.service.CourseService
@@ -20,7 +21,7 @@ import java.nio.file.Paths
 import java.util.*
 
 @Service
-class CourseServiceImpl(val courseRepository: CourseRepository): CourseService {
+class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService {
 
     private val logger = LoggerFactory.getLogger(CourseServiceImpl::class.java)
 
@@ -51,13 +52,15 @@ class CourseServiceImpl(val courseRepository: CourseRepository): CourseService {
     }
 
     override fun save(courseRequest: CourseRequest): CourseResponse {
-        val courseList = courseRepository.saveAll(courseRequest.courseList)
+        val courseRequestList = CourseDto.getCourseEntityListFromDtoList(courseRequest.courseList)
+        val courseList = courseRepository.saveAll(courseRequestList)
         return CourseResponse(courseList)
     }
 
     override fun update(courseRequest: CourseRequest): CourseResponse {
+        val courseRequestList = CourseDto.getCourseEntityListFromDtoList(courseRequest.courseList)
         val courseInDBList = mutableListOf<Course>()
-        for (course in courseRequest.courseList) {
+        for (course in courseRequestList) {
             if (null == course.id) {
                 continue
             }

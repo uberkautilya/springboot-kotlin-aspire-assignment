@@ -28,6 +28,16 @@ data class StudentDto(
             val studentDtoString = jObjMapper.writeValueAsString(studentDto)
             return jObjMapper.readValue<Student>(studentDtoString)
         }
+
+        fun getStudentDtoListFromEntityList(studentList: List<Student>): List<StudentDto> {
+            val studentString = jObjMapper.writeValueAsString(studentList)
+            return jObjMapper.readValue(studentString)
+        }
+
+        fun getStudentEntityListFromDtoList(studentDtoList: List<StudentDto>): List<Student> {
+            val studentDtoString = jObjMapper.writeValueAsString(studentDtoList)
+            return jObjMapper.readValue(studentDtoString)
+        }
     }
 
     override fun equals(other: Any?): Boolean {

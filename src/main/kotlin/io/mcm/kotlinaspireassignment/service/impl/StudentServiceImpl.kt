@@ -3,6 +3,7 @@ package io.mcm.kotlinaspireassignment.service.impl
 import io.mcm.kotlinaspireassignment.exceptionhandling.exception.StudentException
 import io.mcm.kotlinaspireassignment.model.StudentRequest
 import io.mcm.kotlinaspireassignment.model.StudentResponse
+import io.mcm.kotlinaspireassignment.model.dto.StudentDto
 import io.mcm.kotlinaspireassignment.model.entity.Student
 import io.mcm.kotlinaspireassignment.repository.StudentRepository
 import io.mcm.kotlinaspireassignment.service.StudentService
@@ -35,13 +36,15 @@ class StudentServiceImpl(val studentRepository: StudentRepository): StudentServi
     }
 
     override fun save(studentRequest: StudentRequest): StudentResponse {
-        val studentList = studentRepository.saveAll(studentRequest.studentList)
+        val studentRequestList = StudentDto.getStudentEntityListFromDtoList(studentRequest.studentList)
+        val studentList = studentRepository.saveAll(studentRequestList)
         return StudentResponse(studentList)
     }
 
     override fun update(studentRequest: StudentRequest): StudentResponse {
+        val studentRequestList = StudentDto.getStudentEntityListFromDtoList(studentRequest.studentList)
         val studentInDBList = mutableListOf<Student>()
-        for (student in studentRequest.studentList) {
+        for (student in studentRequestList) {
             if (null == student.id) {
                 continue
             }
@@ -61,7 +64,7 @@ class StudentServiceImpl(val studentRepository: StudentRepository): StudentServi
             if (null == student.id) {
                 continue
             }
-            val studentInDB = studentRepository.findById(student.id!!)
+            val studentInDB = studentRepository.findById(student.id)
                 .orElseThrow { throw StudentException.StudentNotFoundException() }
             studentInDBList.add(studentInDB)
         }

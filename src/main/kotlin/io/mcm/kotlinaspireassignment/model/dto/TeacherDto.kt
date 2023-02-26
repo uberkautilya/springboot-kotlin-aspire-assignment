@@ -34,6 +34,16 @@ data class TeacherDto(
             val teacherDtoString = jObjMapper.writeValueAsString(teacherDto)
             return jObjMapper.readValue<Teacher>(teacherDtoString)
         }
+
+        fun getTeacherDtoListFromEntityList(teacherList: List<Teacher>): List<TeacherDto> {
+            val teacherString = jObjMapper.writeValueAsString(teacherList)
+            return jObjMapper.readValue(teacherString)
+        }
+
+        fun getTeacherEntityListFromDtoList(teacherDtoList: List<TeacherDto>): List<Teacher> {
+            val teacherDtoString = jObjMapper.writeValueAsString(teacherDtoList)
+            return jObjMapper.readValue(teacherDtoString)
+        }
     }
 
     override fun equals(other: Any?): Boolean {

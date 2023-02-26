@@ -3,6 +3,7 @@ package io.mcm.kotlinaspireassignment.service.impl
 import io.mcm.kotlinaspireassignment.exceptionhandling.exception.DepartmentException
 import io.mcm.kotlinaspireassignment.model.DepartmentRequest
 import io.mcm.kotlinaspireassignment.model.DepartmentResponse
+import io.mcm.kotlinaspireassignment.model.dto.DepartmentDto
 import io.mcm.kotlinaspireassignment.model.entity.Department
 import io.mcm.kotlinaspireassignment.repository.DepartmentRepository
 import io.mcm.kotlinaspireassignment.service.DepartmentService
@@ -31,13 +32,15 @@ class DepartmentServiceImpl(val departmentRepository: DepartmentRepository) : De
     }
 
     override fun save(departmentRequest: DepartmentRequest): DepartmentResponse {
-        val departmentList = departmentRepository.saveAll(departmentRequest.departmentList)
+        val departmentRequestList = DepartmentDto.getDepartmentEntityListFromDtoList(departmentRequest.departmentList)
+        val departmentList = departmentRepository.saveAll(departmentRequestList)
         return DepartmentResponse(departmentList)
     }
 
     override fun update(departmentRequest: DepartmentRequest): DepartmentResponse {
+        val departmentRequestList = DepartmentDto.getDepartmentEntityListFromDtoList(departmentRequest.departmentList)
         val departmentInDBList = mutableListOf<Department>()
-        for (department in departmentRequest.departmentList) {
+        for (department in departmentRequestList) {
             if (null == department.id) {
                 continue
             }
@@ -58,7 +61,7 @@ class DepartmentServiceImpl(val departmentRepository: DepartmentRepository) : De
             if (null == department.id) {
                 continue
             }
-            val departmentInDB = departmentRepository.findById(department.id!!)
+            val departmentInDB = departmentRepository.findById(department.id)
                 .orElseThrow { throw DepartmentException.DepartmentNotFoundException() }
             departmentInDBList.add(departmentInDB)
         }
