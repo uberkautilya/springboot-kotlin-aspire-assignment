@@ -5,12 +5,14 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.mcm.kotlinaspireassignment.model.entity.Course
 import java.time.LocalDate
+import javax.validation.constraints.NotBlank
 
 val jObjMapper = jacksonObjectMapper()
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class CourseDto(
     val id: Int?,
+    @NotBlank(message = "Course name cannot be blank")
     val name: String?,
     val startDate: LocalDate?,
     val endDate: LocalDate?,
