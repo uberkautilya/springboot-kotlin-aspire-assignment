@@ -20,15 +20,18 @@ class CourseRequest {
 
 class DepartmentRequest {
     val departmentFilter: DepartmentFilter = DepartmentFilter()
+    @field:Valid
     val departmentList: List<DepartmentDto> = listOf()
 }
 
 class TeacherRequest {
     val teacherFilter: TeacherFilter = TeacherFilter()
+    @field:Valid
     val teacherList: List<TeacherDto> = listOf()
 }
 
 class StudentRequest {
     val studentFilter: StudentFilter = StudentFilter()
+    @field:Valid
     val studentList: List<StudentDto> = listOf()
 }

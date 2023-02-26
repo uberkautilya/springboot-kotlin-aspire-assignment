@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/students", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -22,12 +23,12 @@ class StudentController(val studentService: StudentService) {
     }
 
     @PostMapping
-    fun save(@RequestBody studentRequest: StudentRequest): ResponseEntity<StudentResponse> {
+    fun save(@Valid @RequestBody studentRequest: StudentRequest): ResponseEntity<StudentResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(studentService.save(studentRequest))
     }
 
     @PutMapping
-    fun update(@RequestBody studentRequest: StudentRequest): ResponseEntity<StudentResponse> {
+    fun update(@Valid @RequestBody studentRequest: StudentRequest): ResponseEntity<StudentResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(studentService.save(studentRequest))
     }
 
