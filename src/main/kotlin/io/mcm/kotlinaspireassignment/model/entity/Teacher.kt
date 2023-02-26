@@ -15,6 +15,9 @@ open class Teacher {
     @GeneratedValue(strategy = GenerationType.AUTO)
     open var id: Int? = null
     open var name: String? = null
+    open var age: Int? = null
+    open var gender: String? = null
+    open var mobileNo: String? = null
     open var salary: Long? = null
 
     @Temporal(TemporalType.DATE)
@@ -34,6 +37,9 @@ open class Teacher {
     constructor(
         id: Int? = null,
         name: String? = null,
+        age: Int? = null,
+        gender: String? = null,
+        mobileNo: String? = null,
         courseList: MutableList<Course>? = null,
         department: Department? = null,
         joiningDate: Date? = null,
@@ -42,6 +48,9 @@ open class Teacher {
     ) {
         this.id = id
         this.name = name
+        this.age = age
+        this.gender = gender
+        this.mobileNo = mobileNo
         this.courseList = courseList
         this.department = department
         this.joiningDate = joiningDate
@@ -63,6 +72,9 @@ open class Teacher {
 
         if (id != other.id) return false
         if (name != other.name) return false
+        if (age != other.age) return false
+        if (gender != other.gender) return false
+        if (mobileNo != other.mobileNo) return false
         if (salary != other.salary) return false
         if (joiningDate != other.joiningDate) return false
         if (courseList != other.courseList) return false
@@ -75,6 +87,9 @@ open class Teacher {
     override fun hashCode(): Int {
         var result = id ?: 0
         result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (age?.hashCode() ?: 0)
+        result = 31 * result + (gender?.hashCode() ?: 0)
+        result = 31 * result + (mobileNo?.hashCode() ?: 0)
         result = 31 * result + (salary?.hashCode() ?: 0)
         result = 31 * result + (joiningDate?.hashCode() ?: 0)
         result = 31 * result + (courseList?.hashCode() ?: 0)

@@ -12,6 +12,9 @@ open class Student {
     @GeneratedValue(strategy = GenerationType.AUTO)
     open var id: Int? = null
     open var name: String? = null
+    open var age: Int? = null
+    open var gender: String? = null
+    open var mobileNo: String? = null
 
     open var emailId: String? = null
 
@@ -27,11 +30,17 @@ open class Student {
     constructor(
         id: Int? = null,
         name: String? = null,
+        age: Int? = null,
+        gender: String? = null,
+        mobileNo: String? = null,
         emailId: String? = null,
         courseList: MutableList<Course>? = null
     ) {
         this.id = id
         this.name = name
+        this.age = age
+        this.gender = gender
+        this.mobileNo = mobileNo
         this.emailId = emailId
         this.courseList = courseList
     }
@@ -44,21 +53,26 @@ open class Student {
 
         if (id != other.id) return false
         if (name != other.name) return false
+        if (age != other.age) return false
+        if (gender != other.gender) return false
+        if (mobileNo != other.mobileNo) return false
         if (emailId != other.emailId) return false
         if (courseList != other.courseList) return false
 
         return true
     }
 
-
     override fun toString(): String {
-        return """Student(id=$id, name='$name', emailId='$emailId'
+        return """Student(id=$id, name='$name', emailId='$emailId', age='$age', gender='$gender', mobileNo='$mobileNo'
             ${if (null != courseList) ", courseList=${courseList!!.forEach { "${it.id} + ${it.name}" }}" else ""})""".trimMargin()
     }
 
     override fun hashCode(): Int {
         var result = id ?: 0
         result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (age?.hashCode() ?: 0)
+        result = 31 * result + (gender?.hashCode() ?: 0)
+        result = 31 * result + (mobileNo?.hashCode() ?: 0)
         result = 31 * result + (emailId?.hashCode() ?: 0)
         result = 31 * result + (courseList?.hashCode() ?: 0)
         return result
