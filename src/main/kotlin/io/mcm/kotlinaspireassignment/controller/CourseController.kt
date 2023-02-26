@@ -2,20 +2,18 @@ package io.mcm.kotlinaspireassignment.controller
 
 import io.mcm.kotlinaspireassignment.model.CourseRequest
 import io.mcm.kotlinaspireassignment.model.CourseResponse
-import io.mcm.kotlinaspireassignment.service.impl.CourseServiceImpl
+import io.mcm.kotlinaspireassignment.service.CourseService
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/courses", produces = [MediaType.APPLICATION_JSON_VALUE])
-class CourseController(val courseService: CourseServiceImpl) {
+class CourseController(val courseService: CourseService) {
     @GetMapping
     fun findAll(): ResponseEntity<CourseResponse> {
-        return ResponseEntity.ok(CourseResponse(courseService.findAll()))
+        return ResponseEntity.ok(courseService.findAll())
     }
 
     @GetMapping("/{id}")

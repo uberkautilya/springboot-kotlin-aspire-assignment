@@ -27,13 +27,13 @@ class CourseServiceImpl(val courseRepository: CourseRepository): CourseService {
     @Value("\${default.pageSize.courses:3}")
     private var defaultPageSize: Int = 1
 
-    fun findAll(): MutableList<Course> {
+    override fun findAll(): CourseResponse {
         val courseList = courseRepository.findAll()
         logger.info("$courseList")
-        return courseList
+        return CourseResponse(courseList)
     }
 
-    fun findById(id: Int): CourseResponse {
+    override fun findById(id: Int): CourseResponse {
         val courseById =
             courseRepository.findById(id).orElseThrow { CourseException.CourseNotFoundException() }
         val courseContentFileName = courseById.fileName
@@ -50,12 +50,12 @@ class CourseServiceImpl(val courseRepository: CourseRepository): CourseService {
         return CourseResponse(mutableListOf(courseById))
     }
 
-    fun save(courseRequest: CourseRequest): CourseResponse {
+    override fun save(courseRequest: CourseRequest): CourseResponse {
         val courseList = courseRepository.saveAll(courseRequest.courseList)
         return CourseResponse(courseList)
     }
 
-    fun update(courseRequest: CourseRequest): CourseResponse {
+    override fun update(courseRequest: CourseRequest): CourseResponse {
         val courseInDBList = mutableListOf<Course>()
         for (course in courseRequest.courseList) {
             if (null == course.id) {
@@ -75,7 +75,7 @@ class CourseServiceImpl(val courseRepository: CourseRepository): CourseService {
         return CourseResponse(savedCourseList)
     }
 
-    fun delete(courseRequest: CourseRequest): CourseResponse {
+    override fun delete(courseRequest: CourseRequest): CourseResponse {
         val courseInDBList = mutableListOf<Course>()
         for (course in courseRequest.courseList) {
             if (null == course.id) {
@@ -89,9 +89,9 @@ class CourseServiceImpl(val courseRepository: CourseRepository): CourseService {
         return CourseResponse(courseInDBList)
     }
 
-    fun filter(request: CourseRequest): CourseResponse {
+    override fun filter(courseRequest: CourseRequest): CourseResponse {
         var page: Page<Course>
-        val courseFilter = request.courseFilter
+        val courseFilter = courseRequest.courseFilter
         if (Objects.isNull(courseFilter.pageNo)) {
             page = PageImpl(courseRepository.findAll(CourseSpecification.build(courseFilter)))
         } else {
@@ -115,14 +115,14 @@ class CourseServiceImpl(val courseRepository: CourseRepository): CourseService {
         return courseResponse
     }
 
-    fun updateCourseContent(courseId: Int, courseContent: MultipartFile): CourseResponse {
+    override fun updateCourseContent(courseId: Int, courseContent: MultipartFile): CourseResponse {
         if (0 == courseId) {
             throw CourseException.CourseNotFoundException()
         }
         if (null == courseContent.originalFilename || courseContent.originalFilename == "") {
             throw CourseException.InvalidFileNameForCourseContentException()
         }
-        val fileNameWithExtension: String = courseContent!!.originalFilename!!
+        val fileNameWithExtension: String = courseContent.originalFilename!!
         val course = courseRepository.findById(courseId).orElseThrow {
             CourseException.CourseNotFoundException("Course Id: $courseId not found")
         }

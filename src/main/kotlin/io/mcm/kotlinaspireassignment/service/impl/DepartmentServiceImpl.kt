@@ -20,20 +20,22 @@ class DepartmentServiceImpl(val departmentRepository: DepartmentRepository) : De
     @Value("\${default.pageSize.departments:3}")
     var defaultPageSize: Int = 1
 
-    fun findAll(): MutableList<Department> {
-        return departmentRepository.findAll()
+    override fun findAll(): DepartmentResponse {
+        return DepartmentResponse(departmentRepository.findAll())
     }
 
-    fun findById(id: Int): Department {
-        return departmentRepository.findById(id)
+    override fun findById(id: Int): DepartmentResponse {
+        val departmentById = departmentRepository.findById(id)
             .orElseThrow { DepartmentException.DepartmentNotFoundException() }
+        return DepartmentResponse(mutableListOf(departmentById))
     }
 
-    fun save(departmentRequest: DepartmentRequest): MutableList<Department> {
-        return departmentRepository.saveAll(departmentRequest.departmentList)
+    override fun save(departmentRequest: DepartmentRequest): DepartmentResponse {
+        val departmentList = departmentRepository.saveAll(departmentRequest.departmentList)
+        return DepartmentResponse(departmentList)
     }
 
-    fun update(departmentRequest: DepartmentRequest): DepartmentResponse {
+    override fun update(departmentRequest: DepartmentRequest): DepartmentResponse {
         val departmentInDBList = mutableListOf<Department>()
         for (department in departmentRequest.departmentList) {
             if (null == department.id) {
@@ -50,7 +52,7 @@ class DepartmentServiceImpl(val departmentRepository: DepartmentRepository) : De
         return DepartmentResponse(savedDepartmentList)
     }
 
-    fun delete(departmentRequest: DepartmentRequest): DepartmentResponse {
+    override fun delete(departmentRequest: DepartmentRequest): DepartmentResponse {
         val departmentInDBList = mutableListOf<Department>()
         for (department in departmentRequest.departmentList) {
             if (null == department.id) {
@@ -64,7 +66,7 @@ class DepartmentServiceImpl(val departmentRepository: DepartmentRepository) : De
         return DepartmentResponse(departmentInDBList)
     }
 
-    fun filter(departmentRequest: DepartmentRequest): DepartmentResponse {
+    override fun filter(departmentRequest: DepartmentRequest): DepartmentResponse {
         val page: Page<Department>
         val departmentFilter = departmentRequest.departmentFilter
         if (Objects.isNull(departmentFilter.pageNo)) {

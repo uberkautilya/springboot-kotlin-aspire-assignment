@@ -23,23 +23,23 @@ class StudentServiceImpl(val studentRepository: StudentRepository): StudentServi
     @Value("\${default.pageSize.students:3}")
     private var defaultPageSize: Int = 1
 
-    fun findAll(): StudentResponse {
+    override fun findAll(): StudentResponse {
         val studentList = studentRepository.findAll()
         return StudentResponse(studentList)
     }
 
-    fun findById(id: Int): StudentResponse {
+    override fun findById(id: Int): StudentResponse {
         val studentById = studentRepository.findById(id)
         val studentByIdVal = studentById.orElseThrow { throw StudentException.StudentNotFoundException() }
         return StudentResponse(mutableListOf(studentByIdVal))
     }
 
-    fun save(studentRequest: StudentRequest): StudentResponse {
+    override fun save(studentRequest: StudentRequest): StudentResponse {
         val studentList = studentRepository.saveAll(studentRequest.studentList)
         return StudentResponse(studentList)
     }
 
-    fun update(studentRequest: StudentRequest): StudentResponse {
+    override fun update(studentRequest: StudentRequest): StudentResponse {
         val studentInDBList = mutableListOf<Student>()
         for (student in studentRequest.studentList) {
             if (null == student.id) {
@@ -55,7 +55,7 @@ class StudentServiceImpl(val studentRepository: StudentRepository): StudentServi
         return StudentResponse(savedStudentList)
     }
 
-    fun delete(studentRequest: StudentRequest): StudentResponse {
+    override fun delete(studentRequest: StudentRequest): StudentResponse {
         val studentInDBList = mutableListOf<Student>()
         for (student in studentRequest.studentList) {
             if (null == student.id) {
@@ -70,9 +70,9 @@ class StudentServiceImpl(val studentRepository: StudentRepository): StudentServi
     }
 
     @Transactional(readOnly = true)
-    fun filter(request: StudentRequest): StudentResponse {
+    override fun filter(studentRequest: StudentRequest): StudentResponse {
         var page: Page<Student>
-        val studentFilter = request.studentFilter
+        val studentFilter = studentRequest.studentFilter
         if (Objects.isNull(studentFilter.pageNo)) {
             page = PageImpl(studentRepository.findAll(StudentSpecification.build(studentFilter)))
         } else {

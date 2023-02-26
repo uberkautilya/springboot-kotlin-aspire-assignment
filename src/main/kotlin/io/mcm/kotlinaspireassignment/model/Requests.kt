@@ -5,7 +5,6 @@ import io.mcm.kotlinaspireassignment.model.entity.Department
 import io.mcm.kotlinaspireassignment.model.entity.Student
 import io.mcm.kotlinaspireassignment.model.entity.Teacher
 import org.springframework.web.multipart.MultipartFile
-import javax.validation.Valid
 
 class CourseRequest {
     val courseFilter: CourseFilter = CourseFilter()
@@ -17,13 +16,13 @@ class CourseRequest {
 }
 
 class DepartmentRequest {
-    val departmentList: MutableList<Department> = mutableListOf()
     val departmentFilter: DepartmentFilter = DepartmentFilter()
+    val departmentList: List<Department> = listOf()
 }
 
 class TeacherRequest {
     val teacherFilter: TeacherFilter = TeacherFilter()
-    val teacherList: List<Teacher> = listOf<Teacher>()
+    val teacherList: List<Teacher> = listOf()
 }
 
 class StudentRequest {

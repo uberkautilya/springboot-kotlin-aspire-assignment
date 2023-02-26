@@ -23,23 +23,23 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
     @Value("\${default.pageSize.teachers:3}")
     private var defaultPageSize: Int = 1
 
-    fun findAll(): TeacherResponse {
+    override fun findAll(): TeacherResponse {
         val teacherList = teacherRepository.findAll()
         return TeacherResponse(teacherList)
     }
 
-    fun findById(id: Int): TeacherResponse {
+    override fun findById(id: Int): TeacherResponse {
         val teacherByIdOptional = teacherRepository.findById(id)
         val teacherById = teacherByIdOptional.orElseThrow { throw TeacherException.TeacherNotFoundException() }
         return TeacherResponse(mutableListOf(teacherById))
     }
 
-    fun save(teacherRequest: TeacherRequest): TeacherResponse {
+    override fun save(teacherRequest: TeacherRequest): TeacherResponse {
         val teacherList = teacherRepository.saveAll(teacherRequest.teacherList)
         return TeacherResponse(teacherList)
     }
 
-    fun update(teacherRequest: TeacherRequest): TeacherResponse {
+    override fun update(teacherRequest: TeacherRequest): TeacherResponse {
         val teacherInDBList = mutableListOf<Teacher>()
         for (teacher in teacherRequest.teacherList) {
             if (null == teacher.id) {
@@ -56,7 +56,7 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
         return TeacherResponse(savedTeacherList)
     }
 
-    fun delete(teacherRequest: TeacherRequest): TeacherResponse {
+    override fun delete(teacherRequest: TeacherRequest): TeacherResponse {
         val teacherInDBList = mutableListOf<Teacher>()
         for (teacher in teacherRequest.teacherList) {
             if (null == teacher.id) {
@@ -70,9 +70,9 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
         return TeacherResponse(teacherInDBList)
     }
 
-    fun filter(request: TeacherRequest): TeacherResponse {
+    override fun filter(teacherRequest: TeacherRequest): TeacherResponse {
         var page: Page<Teacher>
-        val teacherFilter = request.teacherFilter
+        val teacherFilter = teacherRequest.teacherFilter
         if (Objects.isNull(teacherFilter.pageNo)) {
             page = PageImpl(teacherRepository.findAll(TeacherSpecification.build(teacherFilter)))
         } else {
@@ -96,7 +96,7 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
         return teacherResponse
     }
 
-    fun findAllBySalaryAndJoiningDateBetween(
+    override fun findAllBySalaryAndJoiningDateBetween(
         salary: Long,
         joiningDateMin: String,
         joiningDateMax: String
