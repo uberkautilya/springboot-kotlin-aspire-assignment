@@ -3,6 +3,7 @@ package io.mcm.kotlinaspireassignment.model.entity
 import com.fasterxml.jackson.annotation.*
 import java.time.LocalDate
 import javax.persistence.*
+import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotEmpty
 
 @Entity
@@ -14,7 +15,6 @@ open class Course {
     @GeneratedValue(strategy = GenerationType.AUTO)
     open var id: Int? = null
 
-    @NotEmpty(message = "Course name cannot be blank")
     open var name: String? = null
 
     @JsonProperty("startDate")

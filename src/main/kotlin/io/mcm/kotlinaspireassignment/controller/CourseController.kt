@@ -23,9 +23,8 @@ class CourseController(val courseService: CourseServiceImpl) {
         return ResponseEntity.ok(courseService.findById(id))
     }
 
-//    @Validated
     @PostMapping
-    fun save(@RequestBody courseRequest: @Valid CourseRequest): ResponseEntity<CourseResponse> {
+    fun save(@RequestBody courseRequest: CourseRequest): ResponseEntity<CourseResponse> {
         return ResponseEntity.ok(courseService.save(courseRequest))
     }
 

@@ -13,6 +13,8 @@ open class Student {
     open var id: Int? = null
     open var name: String? = null
 
+    open var emailId: String? = null
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     @JoinTable(
         name = "STUDENT_COURSE_MAPPING",
@@ -25,10 +27,12 @@ open class Student {
     constructor(
         id: Int? = null,
         name: String? = null,
+        emailId: String? = null,
         courseList: MutableList<Course>? = null
     ) {
         this.id = id
         this.name = name
+        this.emailId = emailId
         this.courseList = courseList
     }
 
@@ -40,6 +44,7 @@ open class Student {
 
         if (id != other.id) return false
         if (name != other.name) return false
+        if (emailId != other.emailId) return false
         if (courseList != other.courseList) return false
 
         return true
@@ -47,13 +52,14 @@ open class Student {
 
 
     override fun toString(): String {
-        return """Student(id=$id, name='$name' 
-            |${if (null != courseList) ", courseList=${courseList!!.forEach { "${it.id} + ${it.name}" }}" else ""})""".trimMargin()
+        return """Student(id=$id, name='$name', emailId='$emailId'
+            ${if (null != courseList) ", courseList=${courseList!!.forEach { "${it.id} + ${it.name}" }}" else ""})""".trimMargin()
     }
 
     override fun hashCode(): Int {
         var result = id ?: 0
         result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (emailId?.hashCode() ?: 0)
         result = 31 * result + (courseList?.hashCode() ?: 0)
         return result
     }

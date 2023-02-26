@@ -6,10 +6,10 @@ import io.mcm.kotlinaspireassignment.model.entity.Department
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class DepartmentDto(
-    val id: Int,
-    val name: String,
-    val courseList: MutableList<CourseDto>,
-    val teacherList: MutableList<TeacherDto>
+    val id: Int?,
+    val name: String?,
+    val courseList: MutableList<CourseDto>?,
+    val teacherList: MutableList<TeacherDto>?
 ) {
     companion object {
         fun getDepartmentDtoFromEntity(department: Department): DepartmentDto {
@@ -37,16 +37,17 @@ data class DepartmentDto(
         return true
     }
 
-    override fun hashCode(): Int {
-        var result = id
-        result = 31 * result + name.hashCode()
-        result = 31 * result + courseList.hashCode()
-        result = 31 * result + teacherList.hashCode()
-        return result
-    }
 
     override fun toString(): String {
         return "DepartmentDto(id=$id, name='$name', courseList=$courseList, teacherList=$teacherList)"
+    }
+
+    override fun hashCode(): Int {
+        var result = id ?: 0
+        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (courseList?.hashCode() ?: 0)
+        result = 31 * result + (teacherList?.hashCode() ?: 0)
+        return result
     }
 
 }

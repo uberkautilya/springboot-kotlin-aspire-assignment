@@ -17,7 +17,7 @@ class InternationalizationConfig : WebMvcConfigurer {
     @Bean
     fun localeResolver(): SessionLocaleResolver {
         val sessionLocaleResolver = SessionLocaleResolver()
-        sessionLocaleResolver.setDefaultLocale(Locale.US)
+        sessionLocaleResolver.setDefaultLocale(Locale.ENGLISH)
         sessionLocaleResolver.setLocaleAttributeName("session.current.locale")
         sessionLocaleResolver.setTimeZoneAttributeName("session.current.timezone")
         return sessionLocaleResolver

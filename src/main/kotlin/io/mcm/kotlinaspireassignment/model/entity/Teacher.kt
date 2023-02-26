@@ -28,6 +28,8 @@ open class Teacher {
     @JsonBackReference(value = "teacherList-in-department")
     open var department: Department? = null
 
+    open var emailId: String? = null
+
     constructor()
     constructor(
         id: Int? = null,
@@ -35,7 +37,8 @@ open class Teacher {
         courseList: MutableList<Course>? = null,
         department: Department? = null,
         joiningDate: Date? = null,
-        salary: Long? = null
+        salary: Long? = null,
+        emailId: String? = null
     ) {
         this.id = id
         this.name = name
@@ -43,10 +46,11 @@ open class Teacher {
         this.department = department
         this.joiningDate = joiningDate
         this.salary = salary
+        this.emailId = emailId
     }
 
     override fun toString(): String {
-        return """Teacher(id=$id, name='$name', salary=$salary, joiningDate=${joiningDate}
+        return """Teacher(id=$id, name='$name', salary=$salary, joiningDate=${joiningDate}, emailId=$emailId
             ${if (null != courseList) ", courseList=${courseList!!.forEach { "${it.id} + ${it.name}" }}" else ""}
             ${if (null != department) ", department=${department!!.name}" else ""})""".trimMargin()
     }
@@ -63,6 +67,7 @@ open class Teacher {
         if (joiningDate != other.joiningDate) return false
         if (courseList != other.courseList) return false
         if (department != other.department) return false
+        if (emailId != other.emailId) return false
 
         return true
     }
@@ -74,6 +79,7 @@ open class Teacher {
         result = 31 * result + (joiningDate?.hashCode() ?: 0)
         result = 31 * result + (courseList?.hashCode() ?: 0)
         result = 31 * result + (department?.hashCode() ?: 0)
+        result = 31 * result + (emailId?.hashCode() ?: 0)
         return result
     }
 
