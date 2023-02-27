@@ -5,7 +5,11 @@ import io.mcm.kotlinaspireassignment.model.CourseRequest
 import io.mcm.kotlinaspireassignment.model.CourseResponse
 import io.mcm.kotlinaspireassignment.model.dto.CourseDto
 import io.mcm.kotlinaspireassignment.model.entity.Course
+import io.mcm.kotlinaspireassignment.model.entity.Student
 import io.mcm.kotlinaspireassignment.repository.CourseRepository
+import io.mcm.kotlinaspireassignment.repository.DepartmentRepository
+import io.mcm.kotlinaspireassignment.repository.StudentRepository
+import io.mcm.kotlinaspireassignment.repository.TeacherRepository
 import io.mcm.kotlinaspireassignment.service.CourseService
 import io.mcm.kotlinaspireassignment.specification.CourseSpecification
 import org.apache.commons.lang3.StringUtils
@@ -22,12 +26,19 @@ import org.springframework.web.multipart.MultipartFile
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
+import kotlin.jvm.optionals.getOrDefault
 
 @Service
 class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService {
 
     @Autowired
     lateinit var messageSource: MessageSource;
+    @Autowired
+    lateinit var departmentRepository: DepartmentRepository
+    @Autowired
+    lateinit var teacherRepository: TeacherRepository
+    @Autowired
+    lateinit var studentRepository: StudentRepository
 
     private fun internationalizeText(fieldText: String?, locale: Locale?): String? {
         if (null == fieldText) {
@@ -78,6 +89,27 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
 
     override fun save(courseRequest: CourseRequest): CourseResponse {
         val courseRequestList = CourseDto.getCourseEntityListFromDtoList(courseRequest.courseList)
+        for (course in courseRequestList) {
+            if (course.department != null && course.department!!.id != null) {
+                course.department = departmentRepository.findById(course.department!!.id!!).getOrDefault(course.department)
+            }
+            if (course.teacher != null && course.teacher!!.id != null) {
+                course.teacher = teacherRepository.findById(course.teacher!!.id!!).getOrDefault(course.teacher)
+            }
+            if (course.studentList != null) {
+                val studentInDBList = mutableListOf<Student>()
+                for (student in course.studentList!!) {
+                    if (student.id != null) {
+                        var studentInDB: Student = studentRepository.findById(student.id!!).getOrDefault(student)
+                        studentInDBList.add(studentInDB)
+                    } else {
+                        //Create this record, since the id is not available
+                        studentInDBList.add(student)
+                    }
+                }
+                course.studentList = studentInDBList
+            }
+        }
         val courseList = courseRepository.saveAll(courseRequestList)
         return CourseResponse(courseList)
     }
