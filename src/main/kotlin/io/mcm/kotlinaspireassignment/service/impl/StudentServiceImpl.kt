@@ -30,17 +30,26 @@ class StudentServiceImpl(val studentRepository: StudentRepository): StudentServi
     @Value("\${default.pageSize.students:3}")
     private var defaultPageSize: Int = 1
 
+    /**
+     * Fetch all entries of Student entity from the DB
+     */
     override fun findAll(): StudentResponse {
         val studentList = studentRepository.findAll()
         return StudentResponse(studentList)
     }
 
+    /**
+     * Fetch Student entity of id from the request
+     */
     override fun findById(id: Int): StudentResponse {
         val studentById = studentRepository.findById(id)
         val studentByIdVal = studentById.orElseThrow { throw StudentException.StudentNotFoundException() }
         return StudentResponse(mutableListOf(studentByIdVal))
     }
 
+    /**
+     * Save a list of Student entities part of the StudentRequest
+     */
     override fun save(studentRequest: StudentRequest): StudentResponse {
         val studentRequestList = StudentDto.getStudentEntityListFromDtoList(studentRequest.studentList)
 
@@ -64,6 +73,9 @@ class StudentServiceImpl(val studentRepository: StudentRepository): StudentServi
         return StudentResponse(studentList)
     }
 
+    /**
+     * Update Student entities in the list from the StudentRequest
+     */
     override fun update(studentRequest: StudentRequest): StudentResponse {
         val studentRequestList = StudentDto.getStudentEntityListFromDtoList(studentRequest.studentList)
         val studentInDBList = mutableListOf<Student>()
@@ -74,6 +86,10 @@ class StudentServiceImpl(val studentRepository: StudentRepository): StudentServi
             val studentInDB = studentRepository.findById(student.id!!)
                 .orElseThrow { throw StudentException.StudentNotFoundException() }
             studentInDB.name = student.name
+            studentInDB.emailId = student.emailId
+            studentInDB.mobileNo = student.mobileNo
+            studentInDB.gender = student.gender
+            studentInDB.age = student.age
             studentInDB.courseList = student.courseList
             studentInDBList.add(studentInDB)
         }
@@ -81,6 +97,9 @@ class StudentServiceImpl(val studentRepository: StudentRepository): StudentServi
         return StudentResponse(savedStudentList)
     }
 
+    /**
+     * Delete list of students provided in the StudentRequest
+     */
     override fun delete(studentRequest: StudentRequest): StudentResponse {
         val studentInDBList = mutableListOf<Student>()
         for (student in studentRequest.studentList) {
@@ -95,6 +114,9 @@ class StudentServiceImpl(val studentRepository: StudentRepository): StudentServi
         return StudentResponse(studentInDBList)
     }
 
+    /**
+     * Filter Student entities as per the criteria in studentFilter, of StudentRequest
+     */
     @Transactional(readOnly = true)
     override fun filter(studentRequest: StudentRequest): StudentResponse {
         var page: Page<Student>

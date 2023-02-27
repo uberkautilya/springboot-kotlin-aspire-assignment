@@ -24,23 +24,35 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
     @Value("\${default.pageSize.teachers:3}")
     private var defaultPageSize: Int = 1
 
+    /**
+     * Fetch all entries of Teacher entity from the DB
+     */
     override fun findAll(): TeacherResponse {
         val teacherList = teacherRepository.findAll()
         return TeacherResponse(teacherList)
     }
 
+    /**
+     * Fetch Teacher entity of id from the request
+     */
     override fun findById(id: Int): TeacherResponse {
         val teacherByIdOptional = teacherRepository.findById(id)
         val teacherById = teacherByIdOptional.orElseThrow { throw TeacherException.TeacherNotFoundException() }
         return TeacherResponse(mutableListOf(teacherById))
     }
 
+    /**
+     * Save a list of Teacher entities contained in TeacherRequest
+     */
     override fun save(teacherRequest: TeacherRequest): TeacherResponse {
         val teacherRequestList = TeacherDto.getTeacherEntityListFromDtoList(teacherRequest.teacherList)
         val teacherList = teacherRepository.saveAll(teacherRequestList)
         return TeacherResponse(teacherList)
     }
 
+    /**
+     * Update the list of Teacher entities in the TeacherRequest
+     */
     override fun update(teacherRequest: TeacherRequest): TeacherResponse {
         val teacherRequestList = TeacherDto.getTeacherEntityListFromDtoList(teacherRequest.teacherList)
         val teacherInDBList = mutableListOf<Teacher>()
@@ -51,6 +63,11 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
             val teacherInDB = teacherRepository.findById(teacher.id!!)
                 .orElseThrow { throw TeacherException.TeacherNotFoundException() }
             teacherInDB.name = teacher.name
+            teacherInDB.emailId = teacher.emailId
+            teacherInDB.gender = teacher.gender
+            teacherInDB.salary = teacher.salary
+            teacherInDB.salary = teacher.salary
+            teacherInDB.mobileNo = teacher.mobileNo
             teacherInDB.courseList = teacher.courseList
             teacherInDB.department = teacher.department
             teacherInDBList.add(teacherInDB)
@@ -59,6 +76,9 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
         return TeacherResponse(savedTeacherList)
     }
 
+    /**
+     * Delete a list of Teacher entities passed in the TeacherRequest
+     */
     override fun delete(teacherRequest: TeacherRequest): TeacherResponse {
         val teacherInDBList = mutableListOf<Teacher>()
         for (teacher in teacherRequest.teacherList) {
@@ -73,6 +93,9 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
         return TeacherResponse(teacherInDBList)
     }
 
+    /**
+     * Fetch Teacher entities conforming to the criteria passed in teacherFilter object, in TeacherRequest
+     */
     override fun filter(teacherRequest: TeacherRequest): TeacherResponse {
         var page: Page<Teacher>
         val teacherFilter = teacherRequest.teacherFilter
@@ -99,6 +122,9 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
         return teacherResponse
     }
 
+    /**
+     * Filter Teacher entities using JPA by the Joining date in the range joiningDateMin and joiningDateMax
+     */
     override fun findAllByJoiningDateBetween(
         joiningDateMin: String,
         joiningDateMax: String
@@ -111,6 +137,9 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
         return TeacherResponse(teacherList)
     }
 
+    /**
+     * Filter Teacher entities using JPA by the Salary range and Age limits provided in the request
+     */
     override fun findAllBySalaryBetweenAndAgeBetween(salaryMin: Long, salaryMax: Long, ageMin: Int, ageMax: Int): TeacherResponse {
         val teacherList = teacherRepository.findAllBySalaryBetweenAndAgeBetween(salaryMin, salaryMax, ageMin, ageMax)
         return TeacherResponse(teacherList)

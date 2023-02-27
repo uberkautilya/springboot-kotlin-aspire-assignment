@@ -23,22 +23,34 @@ class DepartmentServiceImpl(val departmentRepository: DepartmentRepository) : De
     @Value("\${default.pageSize.departments:3}")
     var defaultPageSize: Int = 1
 
+    /**
+     * Fetch all Department entities from the DB
+     */
     override fun findAll(): DepartmentResponse {
         return DepartmentResponse(departmentRepository.findAll())
     }
 
+    /**
+     * Fetch the department entity of Id provided as parameter
+     */
     override fun findById(id: Int): DepartmentResponse {
         val departmentById = departmentRepository.findById(id)
             .orElseThrow { DepartmentException.DepartmentNotFoundException() }
         return DepartmentResponse(mutableListOf(departmentById))
     }
 
+    /**
+     * Save a list of Department entities in the DepartmentRequest
+     */
     override fun save(departmentRequest: DepartmentRequest): DepartmentResponse {
         val departmentRequestList = DepartmentDto.getDepartmentEntityListFromDtoList(departmentRequest.departmentList)
         val departmentList = departmentRepository.saveAll(departmentRequestList)
         return DepartmentResponse(departmentList)
     }
 
+    /**
+     * Update list of Department entities in the DepartmentRequest
+     */
     override fun update(departmentRequest: DepartmentRequest): DepartmentResponse {
         val departmentRequestList = DepartmentDto.getDepartmentEntityListFromDtoList(departmentRequest.departmentList)
         val departmentInDBList = mutableListOf<Department>()
@@ -57,6 +69,9 @@ class DepartmentServiceImpl(val departmentRepository: DepartmentRepository) : De
         return DepartmentResponse(savedDepartmentList)
     }
 
+    /**
+     * Deletes a list of Department entities, passed in the DepartmentRequest
+     */
     override fun delete(departmentRequest: DepartmentRequest): DepartmentResponse {
         val departmentEntityList = DepartmentDto.getDepartmentEntityListFromDtoList(departmentRequest.departmentList)
 
@@ -84,6 +99,9 @@ class DepartmentServiceImpl(val departmentRepository: DepartmentRepository) : De
         return DepartmentResponse(departmentInDBList)
     }
 
+    /**
+     * Filter Department entities from the DB as per criteria available in departmentFilter of DepartmentRequest
+     */
     override fun filter(departmentRequest: DepartmentRequest): DepartmentResponse {
         val page: Page<Department>
         val departmentFilter = departmentRequest.departmentFilter

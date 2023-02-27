@@ -40,6 +40,10 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
     @Autowired
     lateinit var studentRepository: StudentRepository
 
+    /**
+     * Substitute the argument text to the language of Locale provided
+     * Default: US
+     */
     private fun internationalizeText(fieldText: String?, locale: Locale?): String? {
         if (null == fieldText) {
             return null
@@ -63,12 +67,19 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
     @Value("\${default.pageSize.courses:3}")
     private var defaultPageSize: Int = 1
 
+    /**
+     * Fetch all Course entities from the DB
+     */
     override fun findAll(): CourseResponse {
         val courseList = courseRepository.findAll()
         logger.info("$courseList")
         return CourseResponse(courseList)
     }
 
+    /**
+     * Fetch the Course entity with the provided id
+     * Course content of the entity fetched is written to the disk as well
+     */
     override fun findById(id: Int, locale: Locale?): CourseResponse {
         val courseById =
             courseRepository.findById(id).orElseThrow { CourseException.CourseNotFoundException() }
@@ -87,6 +98,9 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
         return CourseResponse(mutableListOf(courseById))
     }
 
+    /**
+     * Saves list of Course entities in the CourseRequest to DB
+     */
     override fun save(courseRequest: CourseRequest): CourseResponse {
         val courseRequestList = CourseDto.getCourseEntityListFromDtoList(courseRequest.courseList)
         for (course in courseRequestList) {
@@ -114,6 +128,9 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
         return CourseResponse(courseList)
     }
 
+    /**
+     * Updates a list of Course entities in the CourseRequest
+     */
     override fun update(courseRequest: CourseRequest): CourseResponse {
         val courseRequestList = CourseDto.getCourseEntityListFromDtoList(courseRequest.courseList)
         val courseInDBList = mutableListOf<Course>()
@@ -135,6 +152,9 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
         return CourseResponse(savedCourseList)
     }
 
+    /**
+     * Deletes a list of Course entities from the DB
+     */
     override fun delete(courseRequest: CourseRequest): CourseResponse {
         val courseInDBList = mutableListOf<Course>()
         for (course in courseRequest.courseList) {
@@ -149,6 +169,9 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
         return CourseResponse(courseInDBList)
     }
 
+    /**
+     * Filter Course entities as per the courseFilter, of the CourseRequest
+     */
     override fun filter(courseRequest: CourseRequest): CourseResponse {
         var page: Page<Course>
         val courseFilter = courseRequest.courseFilter
@@ -175,6 +198,9 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
         return courseResponse
     }
 
+    /**
+     * Update a Course entity by Id: Add its CourseContent to DB
+     */
     override fun updateCourseContent(courseId: Int, courseContent: MultipartFile): CourseResponse {
         if (0 == courseId) {
             throw CourseException.CourseNotFoundException()
