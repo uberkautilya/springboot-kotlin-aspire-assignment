@@ -17,7 +17,11 @@ open class Department {
     @JsonManagedReference(value = "courseList-in-department")
     open var courseList: MutableList<Course>? = null
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "department", cascade = [CascadeType.ALL])
+    @OneToMany(
+        fetch = FetchType.LAZY,
+        mappedBy = "department",
+        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH]
+    )
     @JsonManagedReference(value = "teacherList-in-department")
     open var teacherList: MutableList<Teacher>? = null
 

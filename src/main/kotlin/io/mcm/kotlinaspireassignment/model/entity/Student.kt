@@ -15,10 +15,12 @@ open class Student {
     open var age: Int? = null
     open var gender: String? = null
     open var mobileNo: String? = null
-
     open var emailId: String? = null
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
+    @ManyToMany(
+        fetch = FetchType.EAGER,
+        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH]
+    )
     @JoinTable(
         name = "STUDENT_COURSE_MAPPING",
         joinColumns = [JoinColumn(name = "student_id")],

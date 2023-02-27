@@ -3,7 +3,6 @@ package io.mcm.kotlinaspireassignment.model.entity
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonManagedReference
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.persistence.*
 
@@ -23,11 +22,18 @@ open class Teacher {
     @Temporal(TemporalType.DATE)
     open var joiningDate: Date? = null
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "teacher", cascade = [CascadeType.ALL])
+    @OneToMany(
+        fetch = FetchType.EAGER,
+        mappedBy = "teacher",
+        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH]
+    )
     @JsonManagedReference(value = "courseList-in-teacher")
     open var courseList: MutableList<Course>? = null
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @ManyToOne(
+        fetch = FetchType.LAZY,
+        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH]
+    )
     @JsonBackReference(value = "teacherList-in-department")
     open var department: Department? = null
 

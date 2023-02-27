@@ -3,8 +3,6 @@ package io.mcm.kotlinaspireassignment.model.entity
 import com.fasterxml.jackson.annotation.*
 import java.time.LocalDate
 import javax.persistence.*
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotEmpty
 
 @Entity
 @Table(name = "courses")
@@ -21,15 +19,25 @@ open class Course {
     open var startDate: LocalDate? = null
     open var endDate: LocalDate? = null
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH]
+    )
     @JsonBackReference("courseList-in-teacher")
     open var teacher: Teacher? = null
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH]
+    )
     @JsonBackReference(value = "courseList-in-department")
     open var department: Department? = null
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courseList", cascade = [CascadeType.ALL])
+    @ManyToMany(
+        fetch = FetchType.LAZY,
+        mappedBy = "courseList",
+        cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH]
+    )
     open var studentList: MutableList<Student>? = null
 
     @Lob
@@ -63,9 +71,9 @@ open class Course {
     override fun toString(): String {
         return """
             Course(id=$id, name='$name', startDate=$startDate, endDate=$endDate, fileName=$fileName)
-            ${if(teacher!=null) ", teacher=${teacher!!.name}" else ""}
-            ${if(department!=null) ", department=${department!!.name}" else ""}
-            ${if(studentList!=null) ", studentList=${studentList!!.forEach { "${it.id}: ${it.name}" }}" else ""}""".trimMargin()
+            ${if (teacher != null) ", teacher=${teacher!!.name}" else ""}
+            ${if (department != null) ", department=${department!!.name}" else ""}
+            ${if (studentList != null) ", studentList=${studentList!!.forEach { "${it.id}: ${it.name}" }}" else ""}""".trimMargin()
     }
 
     override fun equals(other: Any?): Boolean {
