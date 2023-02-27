@@ -53,11 +53,6 @@ open class Department {
         return true
     }
 
-    override fun toString(): String {
-        return """Department(id=$id, name='$name'
-            ${if (null != courseList) ", courseList=${courseList!!.forEach { "${it.id} + ${it.name}" }}" else ""}
-            ${if (null != teacherList) ", teacherList=${teacherList!!.forEach { "${it.id} + ${it.name}" }}" else ""})""".trimMargin()
-    }
 
     override fun hashCode(): Int {
         var result = id ?: 0
@@ -65,6 +60,10 @@ open class Department {
         result = 31 * result + (courseList?.hashCode() ?: 0)
         result = 31 * result + (teacherList?.hashCode() ?: 0)
         return result
+    }
+
+    override fun toString(): String {
+        return "Department(id=$id, name=$name)"
     }
 
 }

@@ -65,11 +65,6 @@ open class Teacher {
         this.emailId = emailId
     }
 
-    override fun toString(): String {
-        return """Teacher(id=$id, name='$name', salary=$salary, joiningDate=${joiningDate}, emailId=$emailId
-            ${if (null != courseList) ", courseList=${courseList!!.forEach { "${it.id} + ${it.name}" }}" else ""}
-            ${if (null != department) ", department=${department!!.name}" else ""})""".trimMargin()
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -103,6 +98,10 @@ open class Teacher {
         result = 31 * result + (department?.hashCode() ?: 0)
         result = 31 * result + (emailId?.hashCode() ?: 0)
         return result
+    }
+
+    override fun toString(): String {
+        return "Teacher(id=$id, name=$name, age=$age, gender=$gender, mobileNo=$mobileNo, salary=$salary, joiningDate=$joiningDate, emailId=$emailId)"
     }
 
 

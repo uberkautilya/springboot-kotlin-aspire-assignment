@@ -69,13 +69,6 @@ open class Course {
         this.fileName = fileName
     }
 
-    override fun toString(): String {
-        return """
-            Course(id=$id, name='$name', startDate=$startDate, endDate=$endDate, fileName=$fileName)
-            ${if (teacher != null) ", teacher=${teacher!!.name}" else ""}
-            ${if (department != null) ", department=${department!!.name}" else ""}
-            ${if (studentList != null) ", studentList=${studentList!!.forEach { "${it.id}: ${it.name}" }}" else ""}""".trimMargin()
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -107,6 +100,10 @@ open class Course {
         result = 31 * result + (courseContent?.contentHashCode() ?: 0)
         result = 31 * result + (fileName?.hashCode() ?: 0)
         return result
+    }
+
+    override fun toString(): String {
+        return "Course(id=$id, name=$name, startDate=$startDate, endDate=$endDate, fileName=$fileName)"
     }
 
 

@@ -65,10 +65,6 @@ open class Student {
         return true
     }
 
-    override fun toString(): String {
-        return """Student(id=$id, name='$name', emailId='$emailId', age='$age', gender='$gender', mobileNo='$mobileNo'
-            ${if (null != courseList) ", courseList=${courseList!!.forEach { "${it.id} + ${it.name}" }}" else ""})""".trimMargin()
-    }
 
     override fun hashCode(): Int {
         var result = id ?: 0
@@ -79,6 +75,10 @@ open class Student {
         result = 31 * result + (emailId?.hashCode() ?: 0)
         result = 31 * result + (courseList?.hashCode() ?: 0)
         return result
+    }
+
+    override fun toString(): String {
+        return "Student(id=$id, name=$name, age=$age, gender=$gender, mobileNo=$mobileNo, emailId=$emailId)"
     }
 
 }
