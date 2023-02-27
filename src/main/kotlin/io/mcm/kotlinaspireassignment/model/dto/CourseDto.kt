@@ -46,6 +46,9 @@ data class CourseDto(
         }
     }
 
+    /**
+     * courseContent is of ByteArrayType. Hence, it is recommended to override the equals an hashCode methods
+     */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -56,18 +59,16 @@ data class CourseDto(
         if (name != other.name) return false
         if (startDate != other.startDate) return false
         if (endDate != other.endDate) return false
-        if (!courseContent.contentEquals(other.courseContent)) return false
+        if (courseContent != null) {
+            if (other.courseContent == null) return false
+            if (!courseContent.contentEquals(other.courseContent)) return false
+        } else if (other.courseContent != null) return false
         if (fileName != other.fileName) return false
         if (teacherDto != other.teacherDto) return false
         if (department != other.department) return false
         if (studentList != other.studentList) return false
 
         return true
-    }
-
-
-    override fun toString(): String {
-        return "CourseDto(id=$id, name='$name', startDate=$startDate, endDate=$endDate, courseContent=${courseContent.contentToString()}, fileName='$fileName', teacherDto=$teacherDto, department=$department, studentList=$studentList)"
     }
 
     override fun hashCode(): Int {

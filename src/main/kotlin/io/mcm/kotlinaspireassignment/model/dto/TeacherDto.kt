@@ -46,41 +46,4 @@ data class TeacherDto(
         }
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as TeacherDto
-
-        if (id != other.id) return false
-        if (name != other.name) return false
-        if (age != other.age) return false
-        if (gender != other.gender) return false
-        if (mobileNo != other.mobileNo) return false
-        if (courseList != other.courseList) return false
-        if (department != other.department) return false
-        if (emailId != other.emailId) return false
-
-        return true
-    }
-
-
-    override fun hashCode(): Int {
-        var result = id ?: 0
-        result = 31 * result + (name?.hashCode() ?: 0)
-        result = 31 * result + (age?.hashCode() ?: 0)
-        result = 31 * result + (gender?.hashCode() ?: 0)
-        result = 31 * result + (mobileNo?.hashCode() ?: 0)
-        result = 31 * result + (salary?.hashCode() ?: 0)
-        result = 31 * result + (joiningDate?.hashCode() ?: 0)
-        result = 31 * result + (courseList?.hashCode() ?: 0)
-        result = 31 * result + (department?.hashCode() ?: 0)
-        result = 31 * result + (emailId?.hashCode() ?: 0)
-        return result
-    }
-
-    override fun toString(): String {
-        return "TeacherDto(id=$id, name=$name, age=$age, gender=$gender, mobileNo=$mobileNo, salary=$salary, joiningDate=$joiningDate, courseList=$courseList, department=$department, emailId=$emailId)"
-    }
-
 }

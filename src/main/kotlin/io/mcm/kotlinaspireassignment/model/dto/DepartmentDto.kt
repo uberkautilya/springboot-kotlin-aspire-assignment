@@ -34,31 +34,4 @@ data class DepartmentDto(
         }
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as DepartmentDto
-
-        if (id != other.id) return false
-        if (name != other.name) return false
-        if (courseList != other.courseList) return false
-        if (teacherList != other.teacherList) return false
-
-        return true
-    }
-
-
-    override fun toString(): String {
-        return "DepartmentDto(id=$id, name='$name', courseList=$courseList, teacherList=$teacherList)"
-    }
-
-    override fun hashCode(): Int {
-        var result = id ?: 0
-        result = 31 * result + (name?.hashCode() ?: 0)
-        result = 31 * result + (courseList?.hashCode() ?: 0)
-        result = 31 * result + (teacherList?.hashCode() ?: 0)
-        return result
-    }
-
 }
