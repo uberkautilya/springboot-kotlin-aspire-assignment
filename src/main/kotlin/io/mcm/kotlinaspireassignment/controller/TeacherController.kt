@@ -43,13 +43,23 @@ class TeacherController(val teacherService: TeacherService) {
         return ResponseEntity.status(HttpStatus.OK).body(teacherService.filter(teacherRequest))
     }
 
-    @GetMapping("/filterBySalaryAndJoiningDate")
-    fun findAllBySalaryAndJoiningDateBetween(
-        @RequestParam("salary") salary: Long,
+    @GetMapping("/findAllByJoiningDateBetween")
+    fun findAllByJoiningDateBetween(
         @RequestParam("joiningDateMin") @DateTimeFormat(style = "yyyy-MM-dd") joiningDateMin: String,
         @RequestParam("joiningDateMax") @DateTimeFormat(style = "yyyy-MM-dd") joiningDateMax: String
     ): ResponseEntity<TeacherResponse> {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(teacherService.findAllBySalaryAndJoiningDateBetween(salary, joiningDateMin, joiningDateMax))
+            .body(teacherService.findAllByJoiningDateBetween(joiningDateMin, joiningDateMax))
+    }
+
+    @GetMapping("/findAllBySalaryBetweenAndAgeBetween")
+    fun findAllBySalaryBetweenAndAgeBetween(
+        @RequestParam("salaryMin") salaryMin: Long,
+        @RequestParam("salaryMax") salaryMax: Long,
+        @RequestParam("ageMin") ageMin: Int,
+        @RequestParam("ageMax") ageMax: Int
+    ): ResponseEntity<TeacherResponse> {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(teacherService.findAllBySalaryBetweenAndAgeBetween(salaryMin, salaryMax, ageMin, ageMax))
     }
 }

@@ -99,17 +99,20 @@ class TeacherServiceImpl(val teacherRepository: TeacherRepository) : TeacherServ
         return teacherResponse
     }
 
-    override fun findAllBySalaryAndJoiningDateBetween(
-        salary: Long,
+    override fun findAllByJoiningDateBetween(
         joiningDateMin: String,
         joiningDateMax: String
     ): TeacherResponse {
         val sdFormat = SimpleDateFormat("yyyy-MM-dd")
-        val teacherList = teacherRepository.findAllBySalaryAndJoiningDateBetween(
-            salary,
+        val teacherList = teacherRepository.findAllByJoiningDateBetween(
             sdFormat.parse(joiningDateMin),
             sdFormat.parse(joiningDateMax)
         )
+        return TeacherResponse(teacherList)
+    }
+
+    override fun findAllBySalaryBetweenAndAgeBetween(salaryMin: Long, salaryMax: Long, ageMin: Int, ageMax: Int): TeacherResponse {
+        val teacherList = teacherRepository.findAllBySalaryBetweenAndAgeBetween(salaryMin, salaryMax, ageMin, ageMax)
         return TeacherResponse(teacherList)
     }
 }

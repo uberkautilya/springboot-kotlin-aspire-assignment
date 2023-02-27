@@ -43,11 +43,22 @@ class DataInit {
             teacher = Teacher(
                 name = "Teacher101",
                 salary = 100L,
+                age = 56,
+                emailId = "teacher101@gmail.com",
+                mobileNo = "0123456789",
+                gender = "Male",
                 joiningDate = SimpleDateFormat("yyyy-MM-dd").parse("2001-02-02"),
                 department = department,
                 courseList = mutableListOf(course)
             )
-            student = Student(name = "Student101", courseList = mutableListOf(course))
+            student = Student(
+                name = "Student101",
+                age = 16,
+                emailId = "student101@gmail.com",
+                mobileNo = "1122334455",
+                gender = "Female",
+                courseList = mutableListOf(course)
+            )
             department = Department(
                 name = "Kotlin with SpringBoot",
                 courseList = mutableListOf(course),

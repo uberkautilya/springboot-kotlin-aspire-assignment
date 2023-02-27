@@ -10,9 +10,15 @@ interface TeacherService {
     fun update(teacherRequest: TeacherRequest): TeacherResponse
     fun delete(teacherRequest: TeacherRequest): TeacherResponse
     fun filter(teacherRequest: TeacherRequest): TeacherResponse
-    fun findAllBySalaryAndJoiningDateBetween(
-        salary: Long,
+    fun findAllByJoiningDateBetween(
         joiningDateMin: String,
         joiningDateMax: String
+    ): TeacherResponse
+
+    fun findAllBySalaryBetweenAndAgeBetween(
+        salaryMin: Long,
+        salaryMax: Long,
+        ageMin: Int,
+        ageMax: Int
     ): TeacherResponse
 }
