@@ -10,7 +10,10 @@ import io.mcm.kotlinaspireassignment.service.CourseService
 import io.mcm.kotlinaspireassignment.specification.CourseSpecification
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.MessageSource
+import org.springframework.context.NoSuchMessageException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -23,6 +26,27 @@ import java.util.*
 @Service
 class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService {
 
+    @Autowired
+    lateinit var messageSource: MessageSource;
+
+    private fun internationalizeText(fieldText: String?, locale: Locale?): String? {
+        if (null == fieldText) {
+            return null
+        }
+        return try {
+            var internationalizedCourseName: String = if (locale == null) {
+                //Post and Put methods have validations against blank course name
+                messageSource.getMessage(fieldText, null, Locale.US)
+            }else{
+                messageSource.getMessage(fieldText, null, locale)
+            }
+            internationalizedCourseName
+        } catch (e: NoSuchMessageException) {
+            logger.warn("No message for $fieldText")
+            fieldText
+        }
+    }
+
     private val logger = LoggerFactory.getLogger(CourseServiceImpl::class.java)
 
     @Value("\${default.pageSize.courses:3}")
@@ -34,7 +58,7 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
         return CourseResponse(courseList)
     }
 
-    override fun findById(id: Int): CourseResponse {
+    override fun findById(id: Int, locale: Locale?): CourseResponse {
         val courseById =
             courseRepository.findById(id).orElseThrow { CourseException.CourseNotFoundException() }
         val courseContentFileName = courseById.fileName
@@ -48,6 +72,7 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
         } else {
             logger.warn("Course content file name is null. Not saving data on disk")
         }
+        courseById.name = internationalizeText(courseById.name, locale)
         return CourseResponse(mutableListOf(courseById))
     }
 
@@ -84,7 +109,7 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
             if (null == course.id) {
                 continue
             }
-            val courseInDB = courseRepository.findById(course.id!!)
+            val courseInDB = courseRepository.findById(course.id)
                 .orElseThrow { throw CourseException.CourseNotFoundException() }
             courseInDBList.add(courseInDB)
         }

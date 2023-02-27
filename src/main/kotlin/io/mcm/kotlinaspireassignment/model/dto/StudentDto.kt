@@ -6,15 +6,15 @@ import javax.validation.constraints.*
 
 data class StudentDto(
     val id: Int?,
-    @NotBlank(message = "Student name cannot be blank")
+    @field:NotBlank(message = "Student name cannot be blank")
     val name: String?,
-    @Email(message = "The email address needs to have the appropriate pattern")
+    @field:Email(message = "The email address needs to have the appropriate pattern")
     val emailId: String?,
-    @Min(3, message = "Minimum age allowed is 3")
-    @Max(60, message = "Maximum age allowed is 60")
+    @field:Min(3, message = "Minimum age allowed is 3")
+    @field:Max(60, message = "Maximum age allowed is 60")
     val age: Int?,
     val gender: String?,
-    @Pattern(regexp = "^\\d{10}$", message = "The mobile number must be 10 digits")
+    @field:Pattern(regexp = "^\\d{10}$", message = "The mobile number must be 10 digits")
     val mobileNo: String?,
     val courseList: MutableList<CourseDto>?
 ) {

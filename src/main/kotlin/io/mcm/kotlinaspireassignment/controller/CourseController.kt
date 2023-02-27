@@ -7,6 +7,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.util.Locale
 import javax.validation.Valid
 
 @RestController
@@ -18,8 +19,11 @@ class CourseController(val courseService: CourseService) {
     }
 
     @GetMapping("/{id}")
-    fun findById(@PathVariable id: Int): ResponseEntity<CourseResponse> {
-        return ResponseEntity.ok(courseService.findById(id))
+    fun findById(
+        @PathVariable id: Int,
+        @RequestHeader(name = "Accept-Language", required = false) locale: Locale?
+    ): ResponseEntity<CourseResponse> {
+        return ResponseEntity.ok(courseService.findById(id, locale))
     }
 
     @PostMapping

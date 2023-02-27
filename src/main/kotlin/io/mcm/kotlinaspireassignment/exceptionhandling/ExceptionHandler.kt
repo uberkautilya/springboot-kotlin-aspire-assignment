@@ -23,9 +23,9 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
         request: WebRequest
     ): ResponseEntity<Any> {
         val errorMap: MutableMap<String, String?> = HashMap()
-        var status: HttpStatus = HttpStatus.BAD_REQUEST
+        val statusFailed: HttpStatus = HttpStatus.BAD_REQUEST
         ex.bindingResult.fieldErrors.forEach { errorMap[it.field] = it.defaultMessage }
-        return ResponseEntity(errorMap, status)
+        return ResponseEntity(errorMap, statusFailed)
     }
 
     @ExceptionHandler(CourseException::class)

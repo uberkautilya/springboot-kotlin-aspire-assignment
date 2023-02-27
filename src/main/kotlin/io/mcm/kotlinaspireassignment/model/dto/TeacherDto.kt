@@ -9,19 +9,19 @@ import javax.validation.constraints.*
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class TeacherDto(
     val id: Int?,
-    @NotBlank(message = "Teacher name cannot be blank")
+    @field:NotBlank(message = "Teacher name cannot be blank")
     val name: String?,
-    @Min(18, message = "Minimum age allowed is 18")
-    @Max(65, message = "Maximum age allowed is 65")
+    @field:Min(18, message = "Minimum age allowed is 18")
+    @field:Max(65, message = "Maximum age allowed is 65")
     val age: Int?,
     val gender: String?,
-    @Pattern(regexp = "^\\d{10}$", message = "The mobile number must be 10 digits")
+    @field:Pattern(regexp = "^\\d{10}$", message = "The mobile number must be 10 digits")
     val mobileNo: String?,
     val salary: Long?,
     val joiningDate: Date?,
     val courseList: MutableList<CourseDto>?,
     val department: DepartmentDto?,
-    @Email(message = "The email address needs to have the appropriate pattern")
+    @field:Email(message = "The email address needs to have the appropriate pattern")
     val emailId: String?
 ) {
     companion object {
@@ -59,6 +59,7 @@ data class TeacherDto(
         if (mobileNo != other.mobileNo) return false
         if (courseList != other.courseList) return false
         if (department != other.department) return false
+        if (emailId != other.emailId) return false
 
         return true
     }

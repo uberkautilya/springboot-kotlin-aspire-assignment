@@ -17,10 +17,21 @@ class InternationalizationConfig : WebMvcConfigurer {
     @Bean
     fun localeResolver(): SessionLocaleResolver {
         val sessionLocaleResolver = SessionLocaleResolver()
-        sessionLocaleResolver.setDefaultLocale(Locale.ENGLISH)
+        sessionLocaleResolver.setDefaultLocale(Locale.US)
         sessionLocaleResolver.setLocaleAttributeName("session.current.locale")
         sessionLocaleResolver.setTimeZoneAttributeName("session.current.timezone")
         return sessionLocaleResolver
+    }
+
+    /**
+     * Defines the base name of our resource bundle as language/messages
+     */
+    @Bean("messageSource")
+    fun messageSource(): MessageSource? {
+        val messageSource = ResourceBundleMessageSource()
+        messageSource.setBasenames("language/messages")
+        messageSource.setDefaultEncoding("UTF-8")
+        return messageSource
     }
 
     /**
@@ -40,16 +51,5 @@ class InternationalizationConfig : WebMvcConfigurer {
      */
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(localeChangeInterceptor()!!)
-    }
-
-    /**
-     * Defines the base name of our resource bundle as language/messages
-     */
-    @Bean("messageSource")
-    fun messageSource(): MessageSource? {
-        val messageSource = ResourceBundleMessageSource()
-        messageSource.setBasenames("language/messages")
-        messageSource.setDefaultEncoding("UTF-8")
-        return messageSource
     }
 }

@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class DepartmentDto(
     val id: Int?,
-    @NotBlank(message = "Department name cannot be blank")
+    @field:NotBlank(message = "Department name cannot be blank")
     val name: String?,
     val courseList: MutableList<CourseDto>?,
     val teacherList: MutableList<TeacherDto>?

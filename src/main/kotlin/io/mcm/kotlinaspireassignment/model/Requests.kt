@@ -9,7 +9,6 @@ import javax.validation.Valid
 
 class CourseRequest {
     val courseFilter: CourseFilter = CourseFilter()
-
     @field:Valid
     val courseList: List<CourseDto> = listOf()
 
