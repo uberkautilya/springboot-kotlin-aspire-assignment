@@ -21,6 +21,8 @@ default:
     departments: 5
     students: 5
     teachers: 5
+  fileSave:
+    dir: "D:/KotlinAssignment"
 logging:
   level:
     root: info

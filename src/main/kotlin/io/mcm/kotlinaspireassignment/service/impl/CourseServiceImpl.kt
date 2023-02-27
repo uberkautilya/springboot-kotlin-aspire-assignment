@@ -33,12 +33,23 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
 
     @Autowired
     lateinit var messageSource: MessageSource;
+
     @Autowired
     lateinit var departmentRepository: DepartmentRepository
+
     @Autowired
     lateinit var teacherRepository: TeacherRepository
+
     @Autowired
     lateinit var studentRepository: StudentRepository
+
+    @Value("\${default.pageSize.courses:3}")
+    private var defaultPageSize: Int = 1
+
+    @Value("\${default.fileSave.dir:D://Assignment}")
+    lateinit var rootDirForSave: String
+
+    private val logger = LoggerFactory.getLogger(CourseServiceImpl::class.java)
 
     /**
      * Substitute the argument text to the language of Locale provided
@@ -52,7 +63,7 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
             var internationalizedCourseName: String = if (locale == null) {
                 //Post and Put methods have validations against blank course name
                 messageSource.getMessage(fieldText, null, Locale.US)
-            }else{
+            } else {
                 messageSource.getMessage(fieldText, null, locale)
             }
             internationalizedCourseName
@@ -61,11 +72,6 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
             fieldText
         }
     }
-
-    private val logger = LoggerFactory.getLogger(CourseServiceImpl::class.java)
-
-    @Value("\${default.pageSize.courses:3}")
-    private var defaultPageSize: Int = 1
 
     /**
      * Fetch all Course entities from the DB
@@ -86,10 +92,10 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
         val courseContentFileName = courseById.fileName
         if (StringUtils.isNotBlank(courseContentFileName)) {
             val fileName = courseContentFileName!!.split(".")
-            val parentPath = Paths.get("D:/Assignment/${fileName[0]}")
+            val parentPath = Paths.get("$rootDirForSave/${fileName[0]}")
             Files.createDirectories(parentPath)
             val filePath =
-                Paths.get("D:/Assignment/${fileName[0]}/$courseContentFileName")
+                Paths.get("$rootDirForSave/${fileName[0]}/$courseContentFileName")
             Files.write(filePath, courseById.courseContent)
         } else {
             logger.warn("Course content file name is null. Not saving data on disk")
@@ -105,7 +111,8 @@ class CourseServiceImpl(val courseRepository: CourseRepository) : CourseService 
         val courseRequestList = CourseDto.getCourseEntityListFromDtoList(courseRequest.courseList)
         for (course in courseRequestList) {
             if (course.department != null && course.department!!.id != null) {
-                course.department = departmentRepository.findById(course.department!!.id!!).getOrDefault(course.department)
+                course.department =
+                    departmentRepository.findById(course.department!!.id!!).getOrDefault(course.department)
             }
             if (course.teacher != null && course.teacher!!.id != null) {
                 course.teacher = teacherRepository.findById(course.teacher!!.id!!).getOrDefault(course.teacher)
