@@ -9,7 +9,8 @@ import javax.persistence.*
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 open class Department {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DepartmentIdGenerator")
+    @SequenceGenerator(name = "DepartmentIdGenerator", sequenceName = "DEPARTMENT_ID_SEQ")
     open var id: Int? = null
     open var name: String? = null
 

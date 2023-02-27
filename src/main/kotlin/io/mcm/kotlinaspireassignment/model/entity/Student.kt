@@ -9,7 +9,8 @@ import javax.persistence.*
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator::class, property = "id")
 open class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "StudentIdGenerator")
+    @SequenceGenerator(name = "StudentIdGenerator", sequenceName = "STUDENT_ID_SEQ")
     open var id: Int? = null
     open var name: String? = null
     open var age: Int? = null

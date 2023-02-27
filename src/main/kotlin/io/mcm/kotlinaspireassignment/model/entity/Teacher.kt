@@ -11,7 +11,8 @@ import javax.persistence.*
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 open class Teacher {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TeacherIdGenerator")
+    @SequenceGenerator(name = "TeacherIdGenerator", sequenceName = "TEACHER_ID_SEQ")
     open var id: Int? = null
     open var name: String? = null
     open var age: Int? = null
