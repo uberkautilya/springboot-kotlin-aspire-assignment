@@ -4,11 +4,14 @@ import io.mcm.kotlinaspireassignment.exceptionhandling.exception.StudentExceptio
 import io.mcm.kotlinaspireassignment.model.StudentRequest
 import io.mcm.kotlinaspireassignment.model.StudentResponse
 import io.mcm.kotlinaspireassignment.model.dto.StudentDto
+import io.mcm.kotlinaspireassignment.model.entity.Course
 import io.mcm.kotlinaspireassignment.model.entity.Student
+import io.mcm.kotlinaspireassignment.repository.CourseRepository
 import io.mcm.kotlinaspireassignment.repository.StudentRepository
 import io.mcm.kotlinaspireassignment.service.StudentService
 import io.mcm.kotlinaspireassignment.specification.StudentSpecification
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -16,10 +19,13 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
+import kotlin.jvm.optionals.getOrDefault
 
 @Service
 class StudentServiceImpl(val studentRepository: StudentRepository): StudentService {
     private val logger = LoggerFactory.getLogger(StudentServiceImpl::class.java)
+    @Autowired
+    lateinit var courseRepository: CourseRepository
 
     @Value("\${default.pageSize.students:3}")
     private var defaultPageSize: Int = 1
@@ -37,6 +43,23 @@ class StudentServiceImpl(val studentRepository: StudentRepository): StudentServi
 
     override fun save(studentRequest: StudentRequest): StudentResponse {
         val studentRequestList = StudentDto.getStudentEntityListFromDtoList(studentRequest.studentList)
+
+        for (student in studentRequestList) {
+            if (student.courseList != null) {
+                val courseInDBList = mutableListOf<Course>()
+                for (course in student.courseList!!) {
+                    if (course.id != null) {
+                        var courseInDB: Course = courseRepository.findById(course.id!!).getOrDefault(course)
+                        courseInDBList.add(courseInDB)
+                    } else {
+                        //Create this record, since the id is not available
+                        courseInDBList.add(course)
+                    }
+                }
+                student.courseList = courseInDBList
+            }
+        }
+
         val studentList = studentRepository.saveAll(studentRequestList)
         return StudentResponse(studentList)
     }

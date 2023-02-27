@@ -9,10 +9,12 @@ import io.mcm.kotlinaspireassignment.repository.DepartmentRepository
 import io.mcm.kotlinaspireassignment.service.DepartmentService
 import io.mcm.kotlinaspireassignment.specification.DepartmentSpecification
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import java.sql.SQLIntegrityConstraintViolationException
 import java.util.*
 
 @Service
@@ -56,16 +58,29 @@ class DepartmentServiceImpl(val departmentRepository: DepartmentRepository) : De
     }
 
     override fun delete(departmentRequest: DepartmentRequest): DepartmentResponse {
+        val departmentEntityList = DepartmentDto.getDepartmentEntityListFromDtoList(departmentRequest.departmentList)
+
         val departmentInDBList = mutableListOf<Department>()
-        for (department in departmentRequest.departmentList) {
+        for (department in departmentEntityList) {
             if (null == department.id) {
                 continue
             }
-            val departmentInDB = departmentRepository.findById(department.id)
+            val departmentInDB = departmentRepository.findById(department.id!!)
                 .orElseThrow { throw DepartmentException.DepartmentNotFoundException() }
             departmentInDBList.add(departmentInDB)
         }
-        departmentRepository.deleteAll(departmentInDBList)
+        try {
+            departmentRepository.deleteAllInBatch(departmentEntityList)
+        } catch (e: DataIntegrityViolationException) {
+            if (e.message?.contains("references `departments`") == true) {
+                throw DepartmentException.ForeignKeyViolationException("Department Id is referenced in another table")
+            }
+        } catch (e: SQLIntegrityConstraintViolationException) {
+            if (e.message?.contains("references `departments`") == true) {
+                throw DepartmentException.ForeignKeyViolationException("Department Id is referenced in another table")
+            }
+        }
+//        departmentRepository.flush()
         return DepartmentResponse(departmentInDBList)
     }
 

@@ -101,6 +101,11 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
                 status = HttpStatus.BAD_REQUEST
                 "Department not persisted: ${exception.message}: ${request.parameterMap.entries}"
             }
+
+            is DepartmentException.ForeignKeyViolationException -> {
+                status = HttpStatus.CONFLICT
+                "Department not deleted: ${exception.message}: ${request.parameterMap.entries}"
+            }
         }
         return ResponseEntity(mutableMap, status)
     }

@@ -8,4 +8,5 @@ sealed class DepartmentException(
 ) : Throwable(message, cause, enableSuppression, writableStackTrace) {
     class DepartmentNotFoundException(message: String? = null) : DepartmentException(message = message)
     class DepartmentNotPersistedException(message: String? = null): DepartmentException(message = message)
+    class ForeignKeyViolationException(message: String? = null): DepartmentException(message = message)
 }
