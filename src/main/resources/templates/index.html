@@ -8,11 +8,11 @@
 <h2 data-th-text="#{label.title}"></h2>
 <p data-th-text="#{label.chooseLang}"></p>
 <div>
-        <span>
-            <a href="/index?language=en" data-th-text="#{label.lang.en}"></a>&nbsp;&nbsp;&nbsp;
-            <a href="/index?language=de" data-th-text="#{label.lang.de}"></a>&nbsp;&nbsp;&nbsp;
-            <a href="/index?language=fr" data-th-text="#{label.lang.fr}"></a>
-        </span>
+    <span>
+            &nbsp;<a href="?language=en" data-th-text="#{label.lang.en}"></a>&nbsp;
+            &nbsp;<a href="?language=de" data-th-text="#{label.lang.de}"></a>&nbsp;
+            &nbsp;<a href="?language=fr" data-th-text="#{label.lang.fr}"></a>&nbsp;
+    </span>
 
 </div>
 <br/><br/>
@@ -24,8 +24,8 @@
     </tr>
     <tr th:each="product: ${products}">
         <td data-th-text="#{__${product.name}__}"></td>
-        <td data-th-text="${product.price}"/>
-        <td data-th-text="${product.lastUpdated}"/>
+        <td data-th-text="${product.price}"></td>
+        <td data-th-text="${product.lastUpdated}"></td>
     </tr>
 </table>
 </body>
