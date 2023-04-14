@@ -14,6 +14,13 @@ spring:
     hibernate:
       ddl-auto: 'update'
     database-platform: org.hibernate.dialect.MySQL8Dialect
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 47077356499-0240bm7tji9pheu8aq3lhr8iugjdjcda.apps.googleusercontent.com
+            client-secret: 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
 
 default:
   pageSize:
@@ -27,6 +34,7 @@ logging:
   level:
     root: info
     org.hibernate: error
+    org.springframework.security: TRACE
   file:
     name: .\log-files\${spring.application.name}.log
     max-size: 11Mb
