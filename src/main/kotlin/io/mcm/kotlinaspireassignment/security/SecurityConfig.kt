@@ -5,9 +5,10 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.security.authentication.AuthenticationEventPublisher
-import org.springframework.security.authentication.ProviderManager
+import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent
 import org.springframework.security.config.Customizer
+import org.springframework.security.config.annotation.ObjectPostProcessor
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -15,11 +16,11 @@ import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @EnableWebSecurity
 @Configuration
 class SecurityConfig {
+
     /**
      * If a particular filter is able to handle a particular request, subsequent filters are not applied
      * Distinct user services can be given to each of the filter chains
@@ -38,10 +39,8 @@ class SecurityConfig {
             httpSecurity.getSharedObject(AuthenticationManagerBuilder::class.java)
                 .authenticationEventPublisher(eventPublisher)
         }
-
-        val robotAuthenticationProvider = RobotAuthenticationProvider(listOf("robotadmin"))
-        val authProviderManager = ProviderManager(robotAuthenticationProvider)
-            .also { it.setAuthenticationEventPublisher(eventPublisher) }
+        val robotLoginConfigurer = RobotLoginConfigurer()
+            .password("robotconfig").password("uberkautilya")
 
         return httpSecurity
             .csrf().disable()
@@ -58,10 +57,24 @@ class SecurityConfig {
                 */
             }
             .httpBasic(Customizer.withDefaults())
+//            .formLogin{ config ->
+//                config.withObjectPostProcessor(
+//                    object : ObjectPostProcessor<AuthenticationProvider> {
+//                        override fun <O : AuthenticationProvider> postProcess(item: O): O {
+//                            println("In object post processor")
+//                            return RateLimitAuthenticationProvider(item) as O
+//                        }
+//
+//                    }
+//                )
+//            }
             .formLogin(Customizer.withDefaults())
             .oauth2Login(Customizer.withDefaults())
-            .addFilterBefore(RobotFilter(authProviderManager), UsernamePasswordAuthenticationFilter::class.java)
-            .authenticationProvider(SpecialAuthProvider())
+            .apply(robotLoginConfigurer).and()
+//            .authenticationProvider(SpecialAuthProvider())
+            .authenticationProvider(
+                RateLimitAuthenticationProvider(SpecialAuthProvider())
+            )
             .build()
     }
 
@@ -71,7 +84,7 @@ class SecurityConfig {
         return InMemoryUserDetailsManager(
             mutableListOf(
                 User.builder()
-                    .username("user").password("{n oop}password")
+                    .username("user").password("{noop}password")
                     .authorities("ROLE_user")
                     .build(),
                 User.builder()
