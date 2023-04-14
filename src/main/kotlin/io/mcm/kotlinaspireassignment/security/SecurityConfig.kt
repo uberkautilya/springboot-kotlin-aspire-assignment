@@ -39,7 +39,8 @@ class SecurityConfig {
                 .authenticationEventPublisher(eventPublisher)
         }
 
-        val authProviderManager = ProviderManager(RobotAuthenticationProvider(listOf("robotadmin")))
+        val robotAuthenticationProvider = RobotAuthenticationProvider(listOf("robotadmin"))
+        val authProviderManager = ProviderManager(robotAuthenticationProvider)
             .also { it.setAuthenticationEventPublisher(eventPublisher) }
 
         return httpSecurity
