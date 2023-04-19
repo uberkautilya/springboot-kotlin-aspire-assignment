@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 class RateLimitAuthenticationProvider(private val delegate: AuthenticationProvider) : AuthenticationProvider {
 
-    private val authToInstantMap: Map<String, Instant> = ConcurrentHashMap<String, Instant>()
+    private var authToInstantMap: Map<String, Instant> = ConcurrentHashMap<String, Instant>()
 
     override fun authenticate(authentication: Authentication?): Authentication? {
         val parentAuth = delegate.authenticate(authentication) ?: return null
@@ -31,10 +31,13 @@ class RateLimitAuthenticationProvider(private val delegate: AuthenticationProvid
 
         val currentInstant = Instant.now()
         val previousInstant = authToInstantMap[auth.name]
-        authToInstantMap.plus(auth.name to currentInstant)
+        authToInstantMap = authToInstantMap.plus(auth.name to currentInstant)
+//        println("\nauthToInstantMap: $authToInstantMap")
+//        println("\npreviousInstant: $previousInstant")
+//        println("\ncurrentInstant: $currentInstant")
 
         return previousInstant == null || currentInstant.isAfter(
             previousInstant.plus(Duration.ofMinutes(1))
-        );
+        )
     }
 }

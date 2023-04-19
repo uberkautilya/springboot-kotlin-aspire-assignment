@@ -34,7 +34,7 @@ logging:
   level:
     root: info
     org.hibernate: error
-    org.springframework.security: TRACE
+    org.springframework.security: DEBUG
   file:
     name: .\log-files\${spring.application.name}.log
     max-size: 11Mb

@@ -57,18 +57,19 @@ class SecurityConfig {
                 */
             }
             .httpBasic(Customizer.withDefaults())
-//            .formLogin{ config ->
-//                config.withObjectPostProcessor(
-//                    object : ObjectPostProcessor<AuthenticationProvider> {
-//                        override fun <O : AuthenticationProvider> postProcess(item: O): O {
-//                            println("In object post processor")
-//                            return RateLimitAuthenticationProvider(item) as O
-//                        }
-//
-//                    }
-//                )
-//            }
-            .formLogin(Customizer.withDefaults())
+//            .formLogin(Customizer.withDefaults())
+            .formLogin {
+                println("In the config for formLogin")
+                it.withObjectPostProcessor(
+                    object : ObjectPostProcessor<AuthenticationProvider> {
+
+                        override fun <O : AuthenticationProvider> postProcess(authProvider: O): O {
+                            println("In object post processor")
+                            return RateLimitAuthenticationProvider(authProvider) as O
+                        }
+                    }
+                )
+            }
             .oauth2Login(Customizer.withDefaults())
             .apply(robotLoginConfigurer).and()
 //            .authenticationProvider(SpecialAuthProvider())
