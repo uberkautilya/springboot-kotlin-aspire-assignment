@@ -32,9 +32,6 @@ class RateLimitAuthenticationProvider(private val delegate: AuthenticationProvid
         val currentInstant = Instant.now()
         val previousInstant = authToInstantMap[auth.name]
         authToInstantMap = authToInstantMap.plus(auth.name to currentInstant)
-//        println("\nauthToInstantMap: $authToInstantMap")
-//        println("\npreviousInstant: $previousInstant")
-//        println("\ncurrentInstant: $currentInstant")
 
         return previousInstant == null || currentInstant.isAfter(
             previousInstant.plus(Duration.ofMinutes(1))
