@@ -1,5 +1,8 @@
-package io.mcm.kotlinaspireassignment.security
+package io.mcm.kotlinaspireassignment.security.config
 
+import io.mcm.kotlinaspireassignment.security.RateLimitAuthenticationProvider
+import io.mcm.kotlinaspireassignment.security.RobotLoginConfigurer
+import io.mcm.kotlinaspireassignment.security.SpecialAuthProvider
 import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -10,16 +13,20 @@ import org.springframework.security.authentication.event.AuthenticationSuccessEv
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.ObjectPostProcessor
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository
 
 @EnableWebSecurity
 @Configuration
-class SecurityConfig {
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+class SecurityConfig(
+    private final val persistentTokenRepository: PersistentTokenRepository,
+    private final val userDetailsService: UserDetailsService
+) {
 
     /**
      * If a particular filter is able to handle a particular request, subsequent filters are not applied
@@ -70,30 +77,16 @@ class SecurityConfig {
                     }
                 )
             }
+            .rememberMe {
+                it.tokenRepository(persistentTokenRepository)
+                it.userDetailsService(userDetailsService)
+            }
             .oauth2Login(Customizer.withDefaults())
             .apply(robotLoginConfigurer).and()
-//            .authenticationProvider(SpecialAuthProvider())
             .authenticationProvider(
                 RateLimitAuthenticationProvider(SpecialAuthProvider())
             )
             .build()
-    }
-
-    @Bean
-    fun userDetailsService(): UserDetailsService {
-
-        return InMemoryUserDetailsManager(
-            mutableListOf(
-                User.builder()
-                    .username("user").password("{noop}password")
-                    .authorities("ROLE_user")
-                    .build(),
-                User.builder()
-                    .username("admin").password("{noop}admin")
-                    .authorities("ROLE_admin")
-                    .build()
-            )
-        )
     }
 
     @Bean
