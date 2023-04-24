@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationEventPublisher
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent
@@ -20,8 +21,8 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository
 
-@EnableWebSecurity
 @Configuration
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
     private final val persistentTokenRepository: PersistentTokenRepository,
@@ -55,8 +56,10 @@ class SecurityConfig(
                 it.antMatchers("/").permitAll()
                 it.antMatchers("/error").permitAll()
                 it.antMatchers("/favicon.ico").permitAll()
-                it.antMatchers("/login/*").permitAll()
-                it.antMatchers("/security/public").permitAll()
+                it.antMatchers("/login/**").permitAll()
+                it.antMatchers(HttpMethod.GET,"/security/public").permitAll()
+                //Permits the path parameter {id} with mvcMatchers()
+                it.mvcMatchers(HttpMethod.GET, "/api/v1/courses/{id}").permitAll()
                 it.anyRequest().authenticated()
                 /*
                 it.antMatchers("/security/private").authenticated()

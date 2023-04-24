@@ -3,8 +3,12 @@ package io.mcm.kotlinaspireassignment.security.authorization
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.*
 
+/**
+ * this is a custom delegating password encoder, adopted from the PasswordEncoderFactories class
+ */
 class PasswordEncoderFactory private constructor() {
     companion object {
+        //DelegatingPasswordEncoders allows storage of password hashes in multiple formats
         fun createDelegatingPasswordEncoder(): PasswordEncoder {
             val encodingId = "bcrypt10"
             val encoders = hashMapOf<String, PasswordEncoder>()

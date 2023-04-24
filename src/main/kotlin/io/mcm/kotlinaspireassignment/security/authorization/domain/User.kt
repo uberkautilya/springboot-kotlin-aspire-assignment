@@ -14,8 +14,8 @@ class User : UserDetails, CredentialsContainer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Int = 0
-    val username: String = ""
-    var password: String? = null
+    private val username: String = ""
+    private var password: String? = null
 
     @ManyToMany(cascade = [CascadeType.MERGE], fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",

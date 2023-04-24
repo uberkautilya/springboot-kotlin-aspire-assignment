@@ -22,6 +22,10 @@ class SecurityBeans {
         return SecurityEvaluationContextExtension()
     }*/
 
+    /**
+     * Once the password encoder bean is available, password for user shouldn't have {noop} as a prefix.
+     * For other password encoding such as Ldap, {SSHA} prefix needs to be there
+     */
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return PasswordEncoderFactory.createDelegatingPasswordEncoder()
@@ -41,18 +45,19 @@ class SecurityBeans {
 
     @Bean
     fun userDetailsService(): UserDetailsService {
+    //Since the password encoder used is custom, which implements a DelegatingPasswordEncoder, it supports distinct encoders for different users
+        val user = User.builder()
+            .username("user")
+            .password("{sha256}4f228d49d43d0876093ab31d509a4aa760e050b8bd7fef9b0bbfe621f0ecdd3fd6be40509ea9f94b")
+            .authorities("ROLE_user")
+            .build()
+        val admin = User.builder()
+            .username("admin").password("{bcrypt}\$2a\$12\$weqdMeMmuvyQdvjV5m155uJgCsMDvWisDRj3kkVaj73jrSPEsKjee")
+            .authorities("ROLE_admin")
+            .build()
 
         return InMemoryUserDetailsManager(
-            mutableListOf(
-                User.builder()
-                    .username("user").password("{noop}password")
-                    .authorities("ROLE_user")
-                    .build(),
-                User.builder()
-                    .username("admin").password("{noop}admin")
-                    .authorities("ROLE_admin")
-                    .build()
-            )
+            mutableListOf(user, admin)
         )
     }
 }
