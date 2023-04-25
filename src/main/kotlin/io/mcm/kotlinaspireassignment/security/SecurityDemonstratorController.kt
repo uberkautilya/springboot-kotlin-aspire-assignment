@@ -1,5 +1,7 @@
 package io.mcm.kotlinaspireassignment.security
 
+import io.mcm.kotlinaspireassignment.security.authorization.annotations.demonstration.ReadPrivatePermission
+import io.mcm.kotlinaspireassignment.security.authorization.annotations.demonstration.ReadPublicPermission
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -17,11 +19,13 @@ import java.util.*
 class SecurityDemonstratorController {
 
     @GetMapping("/public")
+    @ReadPublicPermission
     fun public(): ResponseEntity<String> {
         return ResponseEntity.ok("Unsecured 😒")
     }
 
     @GetMapping("/private")
+    @ReadPrivatePermission
     fun private(auth: Authentication): ResponseEntity<String> {
         return ResponseEntity.ok("Secured 👍. Welcome " + getName())
     }
@@ -30,6 +34,7 @@ class SecurityDemonstratorController {
     Didn't work: TODO
     @PreAuthorize("isAuthenticated() and  hasRole('admin')")
     */
+    @ReadPrivatePermission
     @GetMapping("/admin")
     fun admin(auth: Authentication): ResponseEntity<String> {
         return ResponseEntity.ok("Secured 👍. Welcome " + getName())

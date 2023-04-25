@@ -4,7 +4,10 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationEventPublisher
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -43,7 +46,7 @@ class SecurityBeans {
         return tokenRepository
     }
 
-    @Bean
+    /*@Bean
     fun userDetailsService(): UserDetailsService {
     //Since the password encoder used is custom, which implements a DelegatingPasswordEncoder, it supports distinct encoders for different users
         val user = User.builder()
@@ -59,5 +62,11 @@ class SecurityBeans {
         return InMemoryUserDetailsManager(
             mutableListOf(user, admin)
         )
+    }*/
+
+    @Bean
+    fun authenticationManager(httpSecurity: HttpSecurity, eventPublisher: AuthenticationEventPublisher): AuthenticationManager {
+        return httpSecurity.getSharedObject(AuthenticationManagerBuilder::class.java)
+            .authenticationEventPublisher(eventPublisher).build();
     }
 }

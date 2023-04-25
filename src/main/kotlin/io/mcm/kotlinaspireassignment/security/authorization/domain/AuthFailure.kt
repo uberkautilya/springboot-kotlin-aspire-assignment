@@ -11,7 +11,7 @@ class AuthFailure {
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Int = 0
 
-    @ManyToOne
+//    @ManyToOne
     private var username: String = ""
 
     private var sourceIp: String = ""

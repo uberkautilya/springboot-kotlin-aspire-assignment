@@ -11,7 +11,7 @@ class AuthSuccess {
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Int = 0
 
-    @ManyToOne
+//    @ManyToOne
     private var user: User = User()
 
     private var sourceIp: String = ""

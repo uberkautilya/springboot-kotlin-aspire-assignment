@@ -1,9 +1,9 @@
 package io.mcm.kotlinaspireassignment.security.config
 
 import io.mcm.kotlinaspireassignment.security.RateLimitAuthenticationProvider
-import io.mcm.kotlinaspireassignment.security.springguru.RestHeaderAuthFilter
 import io.mcm.kotlinaspireassignment.security.RobotLoginConfigurer
 import io.mcm.kotlinaspireassignment.security.SpecialAuthProvider
+import io.mcm.kotlinaspireassignment.security.springguru.RestHeaderAuthFilter
 import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,7 +15,6 @@ import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.ObjectPostProcessor
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -25,9 +24,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
+/**
+ * Under covers, Spring security uses AOP to intercept and use the AccessDecisionManager -> Method Security
+ */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 class SecurityConfig(
     private final val persistentTokenRepository: PersistentTokenRepository,
     private final val userDetailsService: UserDetailsService
@@ -43,35 +45,41 @@ class SecurityConfig(
     @Bean
     fun securityFilterChain(
         httpSecurity: HttpSecurity,
-        eventPublisher: AuthenticationEventPublisher
+        eventPublisher: AuthenticationEventPublisher,
+        authenticationManager: AuthenticationManager
     ): SecurityFilterChain {
-
-        //Would no longer be required in Spring security 5.8+
-        run {
-            httpSecurity.getSharedObject(AuthenticationManagerBuilder::class.java)
-                .authenticationEventPublisher(eventPublisher)
-        }
+        /*
+                //Would no longer be required in Spring security 5.8+
+                run {
+                    httpSecurity.getSharedObject(AuthenticationManagerBuilder::class.java)
+                        .authenticationEventPublisher(eventPublisher).build()
+                }*/
         val robotLoginConfigurer = RobotLoginConfigurer()
             .password("robotconfig").password("uberkautilya")
 
         //Not needed. Spring guru course follow along
         httpSecurity.addFilterBefore(
-            restHeaderAuthFilter(httpSecurity.getSharedObject(AuthenticationManager::class.java)),
+//            restHeaderAuthFilter(httpSecurity.getSharedObject(AuthenticationManager::class.java)),
+            restHeaderAuthFilter(authenticationManager),
             UsernamePasswordAuthenticationFilter::class.java
         )
 
         return httpSecurity
             .csrf().disable()
             .authorizeHttpRequests {
+                it.antMatchers("/h2-console/**").permitAll()
                 it.antMatchers("/").permitAll()
                 it.antMatchers("/error").permitAll()
                 it.antMatchers("/favicon.ico").permitAll()
                 it.antMatchers("/login/**").permitAll()
-                it.antMatchers(HttpMethod.GET,"/security/public").permitAll()
+                it.antMatchers(HttpMethod.GET, "/security/public").hasAnyRole("public")
+                it.antMatchers(HttpMethod.GET, "/security/private").hasAnyRole("admin")
                 //Permits the path parameter {id} with mvcMatchers()
                 it.mvcMatchers(HttpMethod.GET, "/api/v1/courses/{id}").permitAll()
                 it.anyRequest().authenticated()
             }
+            //To allow frames of h2-console
+            .headers().frameOptions().sameOrigin().and()
             .httpBasic(Customizer.withDefaults())
             .formLogin {
                 println("In the config for formLogin")

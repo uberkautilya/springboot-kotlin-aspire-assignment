@@ -43,7 +43,7 @@ class RestHeaderAuthFilter(requestMatcher: RequestMatcher) : AbstractAuthenticat
         val apiSecret = getApiSecret(request) ?: ""
         log.info("apiSecret: $apiSecret")
         //If there are no credentials provided, skip to the next filter by returning null
-        if(StringUtils.isEmpty(apiKey)) return null
+        if (StringUtils.isEmpty(apiKey)) return null
 
         val token = UsernamePasswordAuthenticationToken(apiKey, apiSecret)
         //Filters have associated authenticationManagers?
@@ -58,7 +58,7 @@ class RestHeaderAuthFilter(requestMatcher: RequestMatcher) : AbstractAuthenticat
         request: HttpServletRequest?, response: HttpServletResponse?, chain: FilterChain?,
         authResult: Authentication?
     ) {
-        log.debug("Authentication successful. Updating security context")
+        log.debug("Authentication successful. Updating security context ✌️")
         SecurityContextHolder.getContext().authentication = authResult
     }
 
@@ -67,6 +67,7 @@ class RestHeaderAuthFilter(requestMatcher: RequestMatcher) : AbstractAuthenticat
         request: HttpServletRequest, response: HttpServletResponse,
         failed: AuthenticationException?
     ) {
+        log.error("Authentication failed for ${request.getHeader("Api-Key")}⛔")
         SecurityContextHolder.clearContext()
 
         response.sendError(
