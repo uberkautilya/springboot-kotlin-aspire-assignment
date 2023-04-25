@@ -9,7 +9,7 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
  * Take all configurers in a filter chain and init them in a loop. Then a specific step. Then all the configurers in another loop
  */
 class RobotLoginConfigurer : AbstractHttpConfigurer<RobotLoginConfigurer, HttpSecurity>() {
-    private val passwords: List<String> = mutableListOf("robot")
+    private val passwords: List<String> = mutableListOf()
 
     override fun init(http: HttpSecurity) {
         //Contains all the authentication providers

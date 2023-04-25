@@ -1,6 +1,7 @@
 package io.mcm.kotlinaspireassignment.security.config
 
 import io.mcm.kotlinaspireassignment.security.RateLimitAuthenticationProvider
+import io.mcm.kotlinaspireassignment.security.springguru.RestHeaderAuthFilter
 import io.mcm.kotlinaspireassignment.security.RobotLoginConfigurer
 import io.mcm.kotlinaspireassignment.security.SpecialAuthProvider
 import org.springframework.context.ApplicationListener
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationEventPublisher
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent
 import org.springframework.security.config.Customizer
@@ -19,7 +21,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @Configuration
 @EnableWebSecurity
@@ -50,6 +54,12 @@ class SecurityConfig(
         val robotLoginConfigurer = RobotLoginConfigurer()
             .password("robotconfig").password("uberkautilya")
 
+        //Not needed. Spring guru course follow along
+        httpSecurity.addFilterBefore(
+            restHeaderAuthFilter(httpSecurity.getSharedObject(AuthenticationManager::class.java)),
+            UsernamePasswordAuthenticationFilter::class.java
+        )
+
         return httpSecurity
             .csrf().disable()
             .authorizeHttpRequests {
@@ -61,13 +71,8 @@ class SecurityConfig(
                 //Permits the path parameter {id} with mvcMatchers()
                 it.mvcMatchers(HttpMethod.GET, "/api/v1/courses/{id}").permitAll()
                 it.anyRequest().authenticated()
-                /*
-                it.antMatchers("/security/private").authenticated()
-                This way any request that is not explicitly permitted, will need to be authenticated
-                */
             }
             .httpBasic(Customizer.withDefaults())
-//            .formLogin(Customizer.withDefaults())
             .formLogin {
                 println("In the config for formLogin")
                 it.withObjectPostProcessor(
@@ -98,6 +103,12 @@ class SecurityConfig(
             println("\nevent.authentication.javaClass.name: ${event.authentication.javaClass.name}")
             println("\nevent.authentication.name: ${event.authentication.name}")
         }
+    }
+
+    //Not required. Spring guru course follow along
+    fun restHeaderAuthFilter(authenticationManager: AuthenticationManager): RestHeaderAuthFilter {
+        val filter = RestHeaderAuthFilter(AntPathRequestMatcher("/api/**"))
+        return filter.apply { this.setAuthenticationManager(authenticationManager) }
     }
 
 

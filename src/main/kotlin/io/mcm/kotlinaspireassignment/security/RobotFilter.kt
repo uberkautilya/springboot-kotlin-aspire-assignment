@@ -44,7 +44,7 @@ class RobotFilter(private val authenticationManager: AuthenticationManager) : On
             response.status = HttpStatus.FORBIDDEN.value()
             response.characterEncoding = "utf-8"
             response.setHeader("Content-type", "text/plain;charset=utf-8")
-            response.writer.use { it.println("${e.message}. Access is Forbidden!") }
+            response.writer.use { it.println("${e.message}. Access is Forbidden! ⛔") }
             return
         }
 
