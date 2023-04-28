@@ -22,6 +22,9 @@ class User : UserDetails, CredentialsContainer {
     private var username: String = ""
     private var password: String? = null
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    var customer: Customer? = null
+
     @Builder.Default
     private val accountNonExpired = true
     @Builder.Default
@@ -32,16 +35,15 @@ class User : UserDetails, CredentialsContainer {
     private val enabled = true
 
     @Singular
-    @ManyToMany(cascade = [CascadeType.MERGE], fetch = FetchType.EAGER)
+    @ManyToMany(cascade = [CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
         joinColumns = [JoinColumn(name = "USER_ID", referencedColumnName = "ID")],
         inverseJoinColumns = [JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")])
     var roles: Set<Role> = mutableSetOf()
 
-    @Transient
     override fun getAuthorities(): Set<GrantedAuthority> {
-        return roles.stream().map { it.authorities }
-            .flatMap { it.stream() }
+        return roles.stream().map(Role::authorities)
+            .flatMap(Set<Authority>::stream)
             .map { SimpleGrantedAuthority(it.permission) }
             .collect(Collectors.toSet())
     }

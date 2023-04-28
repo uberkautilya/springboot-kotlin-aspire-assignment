@@ -18,12 +18,13 @@ class Role {
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Int = 0
 
+    @Builder.Default
     var name: String = ""
 
     @ManyToMany(mappedBy = "roles")
     val users: Set<User> = mutableSetOf()
 
-    @ManyToMany(cascade = [CascadeType.MERGE], fetch = FetchType.EAGER)
+    @ManyToMany(cascade = [CascadeType.MERGE, CascadeType.PERSIST], fetch = FetchType.EAGER)
     @JoinTable(name= "role_authority",
         joinColumns = [JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")],
         inverseJoinColumns = [JoinColumn(name = "AUTHORITY_ID", referencedColumnName = "ID")])

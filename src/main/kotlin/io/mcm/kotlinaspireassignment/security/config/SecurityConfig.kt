@@ -65,7 +65,8 @@ class SecurityConfig(
         )
 
         return httpSecurity
-            .csrf().disable()
+            //csrf will be enabled except for the ant pattern specified - here disabled for all endpoints
+            .csrf().ignoringAntMatchers("/**").and()
             .authorizeHttpRequests {
                 it.antMatchers("/h2-console/**").permitAll()
                 it.antMatchers("/").permitAll()
@@ -92,6 +93,18 @@ class SecurityConfig(
                         }
                     }
                 )
+                //To customize the login page
+                it.loginProcessingUrl("/login")
+                it.loginPage("/")
+                it.successForwardUrl("/")
+                it.defaultSuccessUrl("/")
+                it.failureUrl("/?error")
+            }
+            //To customize the logout page
+            .logout {
+                it.logoutRequestMatcher(AntPathRequestMatcher("/logout", "GET"))
+                it.logoutSuccessUrl("/?logout")
+                it.permitAll()
             }
             .rememberMe {
                 it.tokenRepository(persistentTokenRepository)

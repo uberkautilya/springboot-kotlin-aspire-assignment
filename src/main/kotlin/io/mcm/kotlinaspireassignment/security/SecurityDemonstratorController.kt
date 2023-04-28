@@ -1,8 +1,8 @@
 package io.mcm.kotlinaspireassignment.security
 
+import io.mcm.kotlinaspireassignment.security.authorization.annotations.demonstration.AdminOrCustomerOnlyPermission
 import io.mcm.kotlinaspireassignment.security.authorization.annotations.demonstration.ReadPrivatePermission
 import io.mcm.kotlinaspireassignment.security.authorization.annotations.demonstration.ReadPublicPermission
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
@@ -38,6 +38,12 @@ class SecurityDemonstratorController {
     @GetMapping("/admin")
     fun admin(auth: Authentication): ResponseEntity<String> {
         return ResponseEntity.ok("Secured 👍. Welcome " + getName())
+    }
+
+    @GetMapping("/customer")
+    @AdminOrCustomerOnlyPermission
+    fun customer(auth: Authentication): ResponseEntity<String> {
+        return ResponseEntity.ok("Secured for customer 'CUSTOMER' 👍. Welcome " + getName())
     }
 
     private fun getName(): String {

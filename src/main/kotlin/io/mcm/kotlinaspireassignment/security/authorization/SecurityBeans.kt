@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository
@@ -24,6 +25,16 @@ class SecurityBeans {
     fun securityEvaluationContextExtension(): SecurityEvaluationContextExtension{
         return SecurityEvaluationContextExtension()
     }*/
+
+    /**
+     * spring-security-data dependency is required to add this spring bean
+     * This Bean allows usage of spring data SpEL: spring expression language
+     * Multi tenancy requirement advanced
+     */
+    @Bean
+    fun securityEvaluationContextExtension(): SecurityEvaluationContextExtension {
+        return SecurityEvaluationContextExtension()
+    }
 
     /**
      * Once the password encoder bean is available, password for user shouldn't have {noop} as a prefix.

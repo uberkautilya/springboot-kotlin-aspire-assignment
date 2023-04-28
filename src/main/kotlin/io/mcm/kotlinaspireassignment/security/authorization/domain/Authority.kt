@@ -26,6 +26,6 @@ class Authority {
     @Builder.Default
     var permission: String = ""
 
-    @ManyToMany(mappedBy = "authorities", cascade = [CascadeType.MERGE, CascadeType.PERSIST])
+    @ManyToMany(mappedBy = "authorities")
     val roles: Set<Role> = mutableSetOf()
 }
