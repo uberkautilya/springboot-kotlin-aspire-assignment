@@ -43,7 +43,7 @@ class SecurityDemonstratorController {
     @GetMapping("/customer")
     @AdminOrCustomerOnlyPermission
     fun customer(auth: Authentication): ResponseEntity<String> {
-        return ResponseEntity.ok("Secured for customer 'CUSTOMER' 👍. Welcome " + getName())
+        return ResponseEntity.ok("Secured for 'CUSTOMER and Admin only' 👍. Welcome " + getName())
     }
 
     private fun getName(): String {
